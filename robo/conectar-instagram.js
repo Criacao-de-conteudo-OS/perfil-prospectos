@@ -72,15 +72,17 @@ async function principal() {
     return dados;
   }
 
-  // 1. Código -> chave de acesso.
-  const troca = await pedir('oauth/access_token', {
-    client_id: args.appId,
-    client_secret: segredo,
-    redirect_uri: redirecionamento,
-    code: args.codigo,
-  }).catch((erro) => {
-    throw new Error(`A Meta não aceitou o código: ${erro.message}. Códigos valem poucos minutos; faça o login de novo e mande o código novo.`);
-  });
+  // 1. Código -> chave de acesso. A documentação do login unificado não pede o
+  // redirect_uri nessa troca; o fluxo manual clássico pede. Tenta os dois jeitos.
+  const parametrosTroca = { client_id: args.appId, client_secret: segredo, code: args.codigo };
+  const troca = await pedir('oauth/access_token', { ...parametrosTroca, redirect_uri: redirecionamento })
+    .catch((erro) => {
+      if (!/redirect|191/i.test(erro.message)) throw erro;
+      return pedir('oauth/access_token', parametrosTroca);
+    })
+    .catch((erro) => {
+      throw new Error(`A Meta não aceitou o código: ${erro.message}. Códigos valem poucos minutos; faça o login de novo e mande o código novo.`);
+    });
   const token = troca.access_token;
   segredos.push(token);
 
