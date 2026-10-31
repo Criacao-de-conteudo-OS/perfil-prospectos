@@ -46,5 +46,7 @@ jobs:
           IG_TOKEN: ${{ secrets.IG_TOKEN }}
           URL_SITE: ${{ vars.URL_SITE }}
           IG_API_VERSION: ${{ vars.IG_API_VERSION }}
+          IG_API_HOST: ${{ vars.IG_API_HOST }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
           SO_ID: ${{ inputs.so_id }}
           ENSAIO: ${{ inputs.ensaio }}

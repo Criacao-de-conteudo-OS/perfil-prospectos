@@ -143,7 +143,7 @@ export async function executar({
         resultado = await publicarPost(post, { api, urlSite, verificarUrl, agora: relogio(), log });
       } catch (erro) {
         if (erro.tokenInvalido) {
-          resumo.interrompido = `O Instagram recusou o token: ${erro.message}. Gere um token novo e atualize o segredo IG_TOKEN.`;
+          resumo.interrompido = `O Instagram recusou a chave de acesso: ${erro.message}. Conecte a conta de novo (node robo/conectar-instagram.js) para gerar uma chave nova.`;
           log(resumo.interrompido);
           return resumo;
         }

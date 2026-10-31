@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
+import { createHmac } from 'node:crypto';
 import { test } from 'node:test';
 import { criarClienteInstagram } from '../instagram.js';
-import { renovarToken } from '../token.js';
 
 const TOKEN = 'TOKEN-SECRETO-1234567890';
 
@@ -27,16 +27,30 @@ test('cria container com POST no endereço certo e manda o token no corpo', asyn
   const { fetch, chamadas } = fetchFalso([{ corpo: { id: 'c1' } }]);
   const id = await cliente(fetch).criarContainer({ image_url: 'https://x/a.jpg', caption: 'oi' });
   assert.equal(id, 'c1');
-  assert.equal(chamadas[0].url, 'https://graph.instagram.com/v26.0/1789/media');
+  assert.equal(chamadas[0].url, 'https://graph.facebook.com/v26.0/1789/media');
   assert.equal(chamadas[0].metodo, 'POST');
   assert.equal(chamadas[0].corpo.image_url, 'https://x/a.jpg');
   assert.equal(chamadas[0].corpo.access_token, TOKEN);
+  assert.equal(chamadas[0].corpo.appsecret_proof, undefined);
+});
+
+test('com a chave secreta do app, manda o appsecret_proof', async () => {
+  const { fetch, chamadas } = fetchFalso([{ corpo: { id: 'c1' } }]);
+  await cliente(fetch, { appSecret: 'SEGREDO-DO-APP-123' }).criarContainer({});
+  const esperado = createHmac('sha256', 'SEGREDO-DO-APP-123').update(TOKEN).digest('hex');
+  assert.equal(chamadas[0].corpo.appsecret_proof, esperado);
+});
+
+test('dá para usar o host do login do Instagram', async () => {
+  const { fetch, chamadas } = fetchFalso([{ corpo: { id: 'c1' } }]);
+  await cliente(fetch, { base: 'https://graph.instagram.com' }).criarContainer({});
+  assert.equal(chamadas[0].url, 'https://graph.instagram.com/v26.0/1789/media');
 });
 
 test('publica o container pelo media_publish', async () => {
   const { fetch, chamadas } = fetchFalso([{ corpo: { id: 'midia-9' } }]);
   assert.equal(await cliente(fetch).publicarContainer('c1'), 'midia-9');
-  assert.equal(chamadas[0].url, 'https://graph.instagram.com/v26.0/1789/media_publish');
+  assert.equal(chamadas[0].url, 'https://graph.facebook.com/v26.0/1789/media_publish');
   assert.equal(chamadas[0].corpo.creation_id, 'c1');
 });
 
@@ -70,7 +84,7 @@ test('erro definitivo não repete a chamada', async () => {
 });
 
 test('falha de rede não vaza o token na mensagem', async () => {
-  const falha = () => new Error(`connect ECONNRESET https://graph.instagram.com/v26.0/x?access_token=${TOKEN}`);
+  const falha = () => new Error(`connect ECONNRESET https://graph.facebook.com/v26.0/x?access_token=${TOKEN}`);
   const { fetch, chamadas } = fetchFalso([falha(), falha(), falha()]);
   await assert.rejects(cliente(fetch).mediasRecentes(), (erro) => {
     assert.ok(!erro.message.includes(TOKEN));
@@ -106,20 +120,5 @@ test('desiste se o Instagram demora demais para processar', async () => {
 test('lista os posts recentes com o token na URL', async () => {
   const { fetch, chamadas } = fetchFalso([{ corpo: { data: [{ id: '1', caption: 'oi' }] } }]);
   assert.deepEqual(await cliente(fetch).mediasRecentes(), [{ id: '1', caption: 'oi' }]);
-  assert.match(chamadas[0].url, /^https:\/\/graph\.instagram\.com\/v26\.0\/1789\/media\?fields=/);
-});
-
-test('renovar token devolve o novo e quantos dias vale', async () => {
-  const { fetch, chamadas } = fetchFalso([{ corpo: { access_token: 'NOVO-TOKEN-123456', expires_in: 5_184_000 } }]);
-  assert.deepEqual(await renovarToken(TOKEN, fetch), { token: 'NOVO-TOKEN-123456', dias: 60 });
-  assert.match(chamadas[0].url, /refresh_access_token\?grant_type=ig_refresh_token&access_token=/);
-});
-
-test('renovar token com erro não vaza o token', async () => {
-  const { fetch } = fetchFalso([{ status: 400, corpo: { error: { message: `Session has expired ${TOKEN}` } } }]);
-  await assert.rejects(renovarToken(TOKEN, fetch), (erro) => {
-    assert.match(erro.message, /não renovou o token/);
-    assert.ok(!erro.message.includes(TOKEN));
-    return true;
-  });
+  assert.match(chamadas[0].url, /^https:\/\/graph\.facebook\.com\/v26\.0\/1789\/media\?fields=/);
 });

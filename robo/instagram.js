@@ -1,3 +1,5 @@
+import { createHmac } from 'node:crypto';
+import { HOST_API_PADRAO } from './config.js';
 import { esperar, esconderSegredos } from './util.js';
 
 export class ErroInstagram extends Error {
@@ -37,13 +39,16 @@ export function criarClienteInstagram({
   fetch = globalThis.fetch,
   dormir = esperar,
   espera = ESPERA_PADRAO,
-  base = 'https://graph.instagram.com',
+  base = HOST_API_PADRAO,
+  appSecret = '',
 }) {
   const raiz = `${base}/${versao}`;
-  const limpar = (texto) => esconderSegredos(texto, [token]);
+  const limpar = (texto) => esconderSegredos(texto, [token, appSecret]);
+  const credenciais = { access_token: token };
+  if (appSecret) credenciais.appsecret_proof = createHmac('sha256', appSecret).update(token).digest('hex');
 
   async function chamar(metodo, caminho, params = {}) {
-    const corpo = new URLSearchParams({ ...params, access_token: token });
+    const corpo = new URLSearchParams({ ...params, ...credenciais });
     const url = metodo === 'GET' ? `${raiz}/${caminho}?${corpo}` : `${raiz}/${caminho}`;
     let ultimoErro = null;
     for (let tentativa = 1; tentativa <= TENTATIVAS_REDE; tentativa++) {

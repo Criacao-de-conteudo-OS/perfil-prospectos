@@ -95,7 +95,13 @@ async function principal() {
 
   const api = ensaio
     ? null
-    : criarClienteInstagram({ igUserId: cfg.igUserId, token: cfg.igToken, versao: cfg.versaoApi });
+    : criarClienteInstagram({
+        igUserId: cfg.igUserId,
+        token: cfg.igToken,
+        versao: cfg.versaoApi,
+        base: cfg.hostApi,
+        appSecret: cfg.appSecret,
+      });
 
   const resumo = await executar({
     carregarFila,
@@ -116,9 +122,9 @@ async function principal() {
 try {
   process.exitCode = await principal();
 } catch (erro) {
-  const token = (process.env.IG_TOKEN ?? '').trim();
+  const segredos = [process.env.IG_TOKEN, process.env.IG_APP_SECRET].map((s) => (s ?? '').trim());
   const mensagem = erro instanceof ErroFila ? erro.message : `Erro inesperado: ${erro.stack ?? erro}`;
-  console.error(esconderSegredos(mensagem, [token]));
-  escreverResumo(`### Robô do Instagram\n\n**Parei:** ${esconderSegredos(erro.message, [token])}\n`);
+  console.error(esconderSegredos(mensagem, segredos));
+  escreverResumo(`### Robô do Instagram\n\n**Parei:** ${esconderSegredos(erro.message, segredos)}\n`);
   process.exitCode = 1;
 }

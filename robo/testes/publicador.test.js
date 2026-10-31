@@ -166,7 +166,7 @@ test('token inválido para tudo sem gastar tentativa', async () => {
     api: apiFalsa({ erroEm: 'recentes', erro }),
   });
   const resumo = await resultado;
-  assert.match(resumo.interrompido, /IG_TOKEN/);
+  assert.match(resumo.interrompido, /conectar-instagram/);
   assert.deepEqual(fila.commits, []);
   assert.equal(fila.estado.posts[0].instagram, undefined);
 });
