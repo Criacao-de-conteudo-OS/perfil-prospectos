@@ -1,0 +1,14 @@
+{
+  "name": "perfil-prospectos",
+  "private": true,
+  "description": "Robô que publica no Instagram os posts agendados em fila.json",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "verificar": "node robo/verificar-fila.js",
+    "ensaio": "node robo/publicar.js --ensaio"
+  }
+}

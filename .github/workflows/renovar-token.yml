@@ -1,0 +1,41 @@
+name: Renovar token do Instagram
+
+on:
+  # Toda segunda, 10h17 de Brasília. O token vale 60 dias; renovando toda
+  # semana, ele nunca chega perto de vencer.
+  schedule:
+    - cron: "17 13 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: renovar-token
+  cancel-in-progress: false
+
+jobs:
+  renovar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Pedir um token novo ao Instagram
+        id: token
+        run: node robo/renovar-token.js "$RUNNER_TEMP/token-novo"
+        env:
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+
+      - name: Guardar o token novo nos segredos
+        if: steps.token.outputs.renovado == 'true'
+        run: |
+          gh secret set IG_TOKEN --repo "$GITHUB_REPOSITORY" < "$RUNNER_TEMP/token-novo"
+          rm -f "$RUNNER_TEMP/token-novo"
+          echo "Segredo IG_TOKEN atualizado."
+        env:
+          GH_TOKEN: ${{ secrets.PAT_SEGREDOS }}

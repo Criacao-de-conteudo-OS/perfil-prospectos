@@ -1,0 +1,50 @@
+name: Publicar no Instagram
+
+on:
+  # Toda hora, aos 7 minutos. Se o próximo post sai em até 75 min, o robô
+  # espera por ele e publica na hora certa.
+  schedule:
+    - cron: "7 * * * *"
+  # Quando a fábrica envia posts novos.
+  push:
+    branches: [main]
+    paths: [fila.json]
+  # Botão "Run workflow" na aba Actions.
+  workflow_dispatch:
+    inputs:
+      so_id:
+        description: "Publicar agora só este post (id). Deixe vazio para seguir a agenda."
+        required: false
+        default: ""
+      ensaio:
+        description: "Ensaio: mostra o que faria, sem publicar nada"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publicar
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Publicar o que está na hora
+        run: node robo/publicar.js
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_TOKEN: ${{ secrets.IG_TOKEN }}
+          URL_SITE: ${{ vars.URL_SITE }}
+          IG_API_VERSION: ${{ vars.IG_API_VERSION }}
+          SO_ID: ${{ inputs.so_id }}
+          ENSAIO: ${{ inputs.ensaio }}

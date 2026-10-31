@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<!-- Troque estes dois valores para usar o painel com outro perfil. -->
+<meta name="repo" content="Criacao-de-conteudo-OS/perfil-prospectos">
+<meta name="perfil" content="_prospectos">
+<title>Robô do Instagram</title>
+<style>
+  :root {
+    --fundo: #0f1117;
+    --cartao: #1a1f2e;
+    --sutil: #151a27;
+    --borda: #262d40;
+    --texto: #e6e8ef;
+    --suave: #9aa3b8;
+    --destaque: #6366f1;
+    --ok: #22c55e;
+    --alerta: #f59e0b;
+    --erro: #ef4444;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --fundo: #f4f6fb;
+      --cartao: #ffffff;
+      --sutil: #f1f4fa;
+      --borda: #dfe3ee;
+      --texto: #151a27;
+      --suave: #5b6478;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--fundo);
+    color: var(--texto);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+  h1 { font-size: 22px; margin: 0; }
+  h1 span { color: var(--destaque); }
+  h2 { font-size: 15px; margin: 28px 0 10px; color: var(--suave); text-transform: uppercase; letter-spacing: .04em; }
+  #atualizado { color: var(--suave); font-size: 13px; margin: 0; }
+  button {
+    background: var(--cartao); color: var(--texto); border: 1px solid var(--borda);
+    border-radius: 8px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer;
+  }
+  button:hover { border-color: var(--destaque); }
+  .numeros { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+  .numero { background: var(--cartao); border: 1px solid var(--borda); border-radius: 12px; padding: 12px; }
+  .numero b { display: block; font-size: 24px; }
+  .numero small { color: var(--suave); }
+  .numero.erro b { color: var(--erro); }
+  @media (max-width: 520px) { .numeros { grid-template-columns: repeat(2, 1fr); } }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  li { background: var(--cartao); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; }
+  .linha { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--suave); font-size: 13px; }
+  .tipo { border-radius: 999px; padding: 1px 8px; font-size: 12px; background: var(--sutil); color: var(--texto); border: 1px solid var(--borda); }
+  .gancho { margin: 4px 0 0; overflow-wrap: anywhere; }
+  .erro-texto { margin: 6px 0 0; font-size: 13px; color: var(--erro); overflow-wrap: anywhere; }
+  .aviso-texto { margin: 6px 0 0; font-size: 13px; color: var(--alerta); overflow-wrap: anywhere; }
+  a { color: var(--destaque); }
+  .vazio { color: var(--suave); font-size: 14px; margin: 0; }
+  footer { margin-top: 32px; font-size: 13px; color: var(--suave); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Robô do <span id="perfil"></span></h1>
+    <div>
+      <p id="atualizado">Carregando…</p>
+    </div>
+  </header>
+
+  <section class="numeros" aria-label="Resumo">
+    <div class="numero"><b id="n-fila">–</b><small>Na fila</small></div>
+    <div class="numero"><b id="n-publicados">–</b><small>Publicados</small></div>
+    <div class="numero erro"><b id="n-problemas">–</b><small>Com problema</small></div>
+    <div class="numero"><b id="n-pausados">–</b><small>Pausados</small></div>
+  </section>
+
+  <section id="sec-problemas" hidden>
+    <h2>Com problema</h2>
+    <ul id="lista-problemas"></ul>
+  </section>
+
+  <section>
+    <h2>Próximos</h2>
+    <ul id="lista-proximos"></ul>
+  </section>
+
+  <section id="sec-pausados" hidden>
+    <h2>Pausados</h2>
+    <ul id="lista-pausados"></ul>
+  </section>
+
+  <section>
+    <h2>Publicados</h2>
+    <ul id="lista-publicados"></ul>
+  </section>
+
+  <footer>
+    <button id="recarregar" type="button">Atualizar agora</button>
+    · <a id="link-robo" href="#">Ver o robô trabalhando no GitHub</a>
+    · Horários de Brasília. A página se atualiza sozinha a cada minuto.
+  </footer>
+</main>
+
+<script>
+  const repo = document.querySelector('meta[name="repo"]').content;
+  const perfil = document.querySelector('meta[name="perfil"]').content;
+  document.getElementById('perfil').textContent = '@' + perfil;
+  document.getElementById('link-robo').href = 'https://github.com/' + repo + '/actions';
+  document.title = 'Robô do @' + perfil;
+
+  const formato = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo', weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+  });
+  const formatoHora = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' });
+  const TIPOS = { reel: 'Reel', carrossel: 'Carrossel', imagem: 'Imagem' };
+  const MAX_TENTATIVAS = 3;
+
+  const status = (post) => (post.instagram && post.instagram.status) || 'pendente';
+  const tentativas = (post) => (post.instagram && post.instagram.tentativas) || 0;
+  const quando = (post) => Date.parse(post.agendado_para);
+
+  function gancho(legenda) {
+    const linha = String(legenda || '').split('\n').find((l) => l.trim());
+    return linha ? linha.trim() : '(sem legenda)';
+  }
+
+  function criar(tag, classe, texto) {
+    const el = document.createElement(tag);
+    if (classe) el.className = classe;
+    if (texto !== undefined) el.textContent = texto;
+    return el;
+  }
+
+  function item(post, data) {
+    const li = criar('li');
+    const linha = criar('div', 'linha');
+    linha.append(criar('span', 'tipo', TIPOS[post.tipo] || post.tipo), criar('span', '', formato.format(new Date(data))));
+    li.append(linha, criar('p', 'gancho', gancho(post.legenda)));
+    return { li, linha };
+  }
+
+  function preencher(id, posts, montar, vazio) {
+    const lista = document.getElementById(id);
+    lista.replaceChildren();
+    if (!posts.length) {
+      lista.append(criar('p', 'vazio', vazio));
+      return;
+    }
+    for (const post of posts) lista.append(montar(post));
+  }
+
+  function desenhar(posts) {
+    const pendentes = posts.filter((p) => status(p) === 'pendente');
+    const publicados = posts.filter((p) => status(p) === 'publicado');
+    const pausados = posts.filter((p) => status(p) === 'pausado');
+    const problemas = posts.filter((p) => status(p) === 'falhou' || (status(p) === 'pendente' && tentativas(p) > 0));
+
+    document.getElementById('n-fila').textContent = pendentes.length;
+    document.getElementById('n-publicados').textContent = publicados.length;
+    document.getElementById('n-problemas').textContent = problemas.length;
+    document.getElementById('n-pausados').textContent = pausados.length;
+
+    document.getElementById('sec-problemas').hidden = problemas.length === 0;
+    preencher('lista-problemas', problemas.sort((a, b) => quando(a) - quando(b)), (post) => {
+      const { li, linha } = item(post, post.agendado_para);
+      const desistiu = status(post) === 'falhou';
+      linha.append(criar('span', '', desistiu
+        ? 'Desisti depois de ' + tentativas(post) + ' tentativas'
+        : 'Tentativa ' + tentativas(post) + ' de ' + MAX_TENTATIVAS + ', tento de novo na próxima hora'));
+      li.append(criar('p', desistiu ? 'erro-texto' : 'aviso-texto', (post.instagram && post.instagram.ultimo_erro) || 'Sem detalhe do erro.'));
+      return li;
+    }, '');
+
+    preencher('lista-proximos', pendentes.filter((p) => tentativas(p) === 0).sort((a, b) => quando(a) - quando(b)).slice(0, 30),
+      (post) => item(post, post.agendado_para).li, 'Nenhum post esperando para sair.');
+
+    document.getElementById('sec-pausados').hidden = pausados.length === 0;
+    preencher('lista-pausados', pausados.sort((a, b) => quando(a) - quando(b)), (post) => item(post, post.agendado_para).li, '');
+
+    const ordemPublicado = (p) => Date.parse((p.instagram && p.instagram.publicado_em) || p.agendado_para);
+    preencher('lista-publicados', publicados.sort((a, b) => ordemPublicado(b) - ordemPublicado(a)).slice(0, 30), (post) => {
+      const { li, linha } = item(post, ordemPublicado(post));
+      const link = post.instagram && post.instagram.link;
+      if (link) {
+        const a = criar('a', '', 'ver no Instagram');
+        a.href = link;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        linha.append(a);
+      }
+      return li;
+    }, 'Nada publicado ainda.');
+  }
+
+  async function carregar() {
+    const aviso = document.getElementById('atualizado');
+    try {
+      const resposta = await fetch('https://raw.githubusercontent.com/' + repo + '/main/fila.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+      const fila = await resposta.json();
+      desenhar(Array.isArray(fila.posts) ? fila.posts : []);
+      aviso.textContent = 'Atualizado às ' + formatoHora.format(new Date());
+    } catch (erro) {
+      aviso.textContent = 'Não consegui ler a fila agora (' + erro.message + '). Tento de novo em 1 minuto.';
+    }
+  }
+
+  document.getElementById('recarregar').addEventListener('click', carregar);
+  carregar();
+  setInterval(carregar, 60000);
+</script>
+</body>
+</html>

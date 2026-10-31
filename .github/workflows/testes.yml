@@ -1,0 +1,31 @@
+name: Testes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "robo/**"
+      - "package.json"
+      - ".github/workflows/**"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Rodar os testes
+        run: npm test
+
+      - name: Conferir a fila
+        run: node robo/verificar-fila.js
