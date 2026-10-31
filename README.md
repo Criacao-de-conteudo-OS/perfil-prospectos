@@ -22,7 +22,7 @@ robô (GitHub Actions, toda hora)
 - Roda **de hora em hora**, aos 7 minutos. Se o próximo post sai em até 75 minutos, o robô espera por ele e publica na hora certa.
 - Se der erro, tenta de novo na rodada seguinte. Depois de **3 tentativas**, desiste e o post aparece em "Com problema" no painel.
 - Antes de publicar, confere se o mesmo post já está no Instagram. Isso evita publicar duas vezes se uma rodada cair no meio.
-- A chave de acesso vem do **login unificado** da Meta: é de usuário do sistema e **não expira**.
+- A chave de acesso é de um **usuário do sistema** do portfólio da Meta e **não expira**.
 
 ## A fila (`fila.json`)
 
@@ -63,16 +63,24 @@ robô (GitHub Actions, toda hora)
 
 ### Conectar a conta do Instagram
 
-1. No app da Meta: caso de uso do Instagram → **API setup with Unified login** → crie uma configuração com chave de **usuário do sistema**, expiração **Nunca**, ativo **Conta do Instagram** e as permissões `instagram_basic` e `instagram_content_publish`.
-2. Registre o URL de redirecionamento `https://criacao-de-conteudo-os.github.io/perfil-prospectos/conectar.html`.
-3. Abra o **URL de login**, entre com a conta do Instagram e autorize. A página `conectar.html` mostra um código.
-4. Em até poucos minutos, rode no PC (com o `gh` logado):
+A chave é gerada direto no portfólio da Meta, sem tela de login.
+
+Tudo no **mesmo portfólio** do app (em business.facebook.com, logado com o Facebook que administra o app):
+
+1. **Contas do Instagram:** a conta precisa estar no portfólio. Se ela for de outro portfólio, lá em "Atribua um parceiro" compartilhe-a com o ID deste portfólio, com controle total.
+2. **Páginas:** a conta do Instagram precisa estar **ligada a uma Página do Facebook**. Sem Página, a API não enxerga a conta (erro 100, subcódigo 33). Crie uma Página e use "Conectar ativos" para ligar o Instagram a ela.
+3. **Usuários do sistema:** crie um usuário (ex.: `robo-prospectos`). A função Funcionário basta.
+4. **Atribuir ativos** a ele, com controle total: o app, a Página e a conta do Instagram.
+5. **Gerar token:** escolha o app, expiração **Nunca** e as permissões `instagram_basic`, `instagram_content_publish`, `pages_show_list`, `pages_read_engagement` e `ads_read` (a Meta pede esta quando o acesso à Página vem pelo portfólio).
+6. Cole a chave num arquivo de texto **fora deste repositório** e rode no PC (com o `gh` logado):
 
 ```bash
-node robo/conectar-instagram.js <codigo> --app-id=<id do app> --arquivo-chave=<arquivo com a chave secreta do app> --perfil=_prospectos
+node robo/conectar-instagram.js --arquivo-token=<arquivo com a chave> --app-id=<id do app> --perfil=_prospectos
 ```
 
-O script troca o código pela chave e grava os segredos no repositório, sem mostrar a chave.
+O script confere a chave, acha a conta, testa a permissão de publicar (sem publicar nada) e grava os segredos no repositório, sem mostrar a chave. Use `--ensaio` para conferir sem gravar.
+
+Alternativa, pelo **login unificado** do app: a página `conectar.html` recebe o código do login, e o mesmo script troca o código pela chave (`node robo/conectar-instagram.js <codigo> --app-id=<id> --arquivo-chave=<arquivo com a chave secreta do app>`).
 
 ### Segredos e variáveis
 
