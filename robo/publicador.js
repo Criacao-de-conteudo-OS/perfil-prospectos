@@ -1,5 +1,5 @@
 import { JANELA_ESPERA_MIN, MAX_TENTATIVAS } from './config.js';
-import { postsDevidos, proximoPendente, tentativasDe } from './fila.js';
+import { MODOS_TESTE, postsDevidos, proximoPendente, tentativasDe } from './fila.js';
 import { ErroInstagram } from './instagram.js';
 import { formatarDataHora, lerDataInstagram } from './util.js';
 
@@ -29,7 +29,9 @@ const normalizarLegenda = (texto) => String(texto ?? '').replace(/\s+/g, ' ').tr
 
 // Se uma rodada anterior publicou e caiu antes de salvar a fila, o post já está no
 // Instagram. Procurar a mesma legenda nos posts recentes evita publicar duas vezes.
-async function procurarJaPublicado(post, { api, agora, log }) {
+// Posts que a fila já registrou (idsUsados) não contam: duas versões de um teste
+// têm a mesma legenda e são posts diferentes.
+async function procurarJaPublicado(post, { api, agora, log, idsUsados }) {
   let recentes;
   try {
     recentes = await api.mediasRecentes();
@@ -41,13 +43,14 @@ async function procurarJaPublicado(post, { api, agora, log }) {
   const legenda = normalizarLegenda(post.legenda);
   const desde = agora.getTime() - TRES_DIAS_MS;
   const achado = recentes.find(
-    (midia) => normalizarLegenda(midia.caption) === legenda && lerDataInstagram(midia.timestamp) >= desde,
+    (midia) =>
+      !idsUsados.has(midia.id) && normalizarLegenda(midia.caption) === legenda && lerDataInstagram(midia.timestamp) >= desde,
   );
   return achado ? { idPublicado: achado.id, link: achado.permalink ?? null } : null;
 }
 
-export async function publicarPost(post, { api, urlSite, verificarUrl, agora, log = () => {} }) {
-  const existente = await procurarJaPublicado(post, { api, agora, log });
+export async function publicarPost(post, { api, urlSite, verificarUrl, agora, log = () => {}, idsUsados = new Set() }) {
+  const existente = await procurarJaPublicado(post, { api, agora, log, idsUsados });
   if (existente) return { ...existente, recuperado: true };
 
   for (const url of urlsDoPost(post, urlSite)) {
@@ -60,7 +63,13 @@ export async function publicarPost(post, { api, urlSite, verificarUrl, agora, lo
     container = await api.criarContainer({ image_url: urls[0], caption: post.legenda });
     await api.aguardarContainer(container, { video: false });
   } else if (post.tipo === 'reel') {
-    const params = { media_type: 'REELS', video_url: urls[0], caption: post.legenda, share_to_feed: 'true' };
+    const params = { media_type: 'REELS', video_url: urls[0], caption: post.legenda };
+    if (post.teste) {
+      // Reel de teste: vai primeiro só para quem não segue a conta.
+      params.trial_params = JSON.stringify({ graduation_strategy: MODOS_TESTE[post.teste] });
+    } else {
+      params.share_to_feed = 'true';
+    }
     if (post.capa) params.cover_url = urlDaMidia(urlSite, post, post.capa);
     container = await api.criarContainer(params);
     await api.aguardarContainer(container, { video: true });
@@ -98,7 +107,7 @@ async function ensaiar(post, { urlSite, verificarUrl, log }) {
   }
   let situacao = ' (sem URL_SITE, não conferi as mídias)';
   if (urlSite) situacao = faltando.length ? `, mas faltam no ar: ${faltando.join(', ')}` : ', com todas as mídias no ar';
-  log(`ENSAIO: publicaria ${post.tipo} "${post.id}" (${post.midias.length} mídia(s))${situacao}.`);
+  log(`ENSAIO: publicaria ${post.tipo}${post.teste ? ' de teste' : ''} "${post.id}" (${post.midias.length} mídia(s))${situacao}.`);
   return { id: post.id, faltando, conferido: Boolean(urlSite) };
 }
 
@@ -119,9 +128,11 @@ export async function executar({
 }) {
   const resumo = { publicados: [], recuperados: [], falhas: [], ensaio: [], proximo: null, interrompido: null };
   const jaTratados = new Set();
+  const idsUsados = new Set(); // ids do Instagram que já pertencem a algum post da fila
 
   for (let rodada = 1; ; rodada++) {
     const fila = await carregarFila();
+    for (const p of fila.posts) if (p.instagram?.id_publicado) idsUsados.add(p.instagram.id_publicado);
     const devidos = postsDevidos(fila, relogio(), { soId }).filter((post) => !jaTratados.has(post.id));
 
     if (soId && rodada === 1 && devidos.length === 0) {
@@ -137,10 +148,10 @@ export async function executar({
         continue;
       }
 
-      log(`Publicando ${post.tipo} "${post.id}" (agendado para ${formatarDataHora(post.agendado_para)})...`);
+      log(`Publicando ${post.tipo}${post.teste ? ' de teste' : ''} "${post.id}" (agendado para ${formatarDataHora(post.agendado_para)})...`);
       let resultado;
       try {
-        resultado = await publicarPost(post, { api, urlSite, verificarUrl, agora: relogio(), log });
+        resultado = await publicarPost(post, { api, urlSite, verificarUrl, agora: relogio(), log, idsUsados });
       } catch (erro) {
         if (erro.tokenInvalido) {
           resumo.interrompido = `O Instagram recusou a chave de acesso: ${erro.message}. Conecte a conta de novo (node robo/conectar-instagram.js) para gerar uma chave nova.`;
@@ -162,6 +173,7 @@ export async function executar({
       // Fora do try: se salvar a fila falhar, o post continua publicado e a
       // próxima rodada o reconhece pela legenda, em vez de contar como falha.
       const { idPublicado, link, recuperado } = resultado;
+      idsUsados.add(idPublicado);
       await salvarMudanca(
         post.id,
         {

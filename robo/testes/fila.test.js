@@ -96,3 +96,12 @@ test('aplicarMudanca junta os campos e ignora post que sumiu', () => {
   assert.deepEqual(f.posts[0].instagram, { status: 'publicado', tentativas: 1, ultimo_erro: null });
   assert.equal(aplicarMudanca(f, 'outro', { status: 'publicado' }), false);
 });
+
+test('reel de teste: aceita manual ou automatico, só em reel', () => {
+  assert.deepEqual(validarFila(fila(post({ teste: 'manual' }), post({ id: 'outro', teste: 'automatico' }))).erros, []);
+  assert.match(validarFila(fila(post({ teste: 'sim' }))).erros.join(), /"teste" precisa ser manual ou automatico/);
+  assert.match(
+    validarFila(fila(post({ tipo: 'carrossel', midias: ['01.jpg', '02.jpg'], teste: 'manual' }))).erros.join(),
+    /só vale para reel/,
+  );
+});

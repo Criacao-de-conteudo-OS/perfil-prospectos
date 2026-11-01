@@ -279,3 +279,52 @@ test('se salvar a fila falhar depois de publicar, não marca como falha', async 
   );
   assert.equal(fila.estado.posts[0].instagram, undefined);
 });
+
+test('reel de teste vai com trial_params e sem share_to_feed', async () => {
+  const api = apiFalsa();
+  const { resultado } = rodar({ posts: [post({ teste: 'manual' })], api });
+  assert.equal((await resultado).publicados.length, 1);
+  const [, params] = api.chamadas.find(([tipo]) => tipo === 'criar');
+  assert.equal(params.media_type, 'REELS');
+  assert.deepEqual(JSON.parse(params.trial_params), { graduation_strategy: 'MANUAL' });
+  assert.equal('share_to_feed' in params, false);
+});
+
+test('reel de teste automático usa SS_PERFORMANCE', async () => {
+  const api = apiFalsa();
+  await rodar({ posts: [post({ teste: 'automatico' })], api }).resultado;
+  const [, params] = api.chamadas.find(([tipo]) => tipo === 'criar');
+  assert.deepEqual(JSON.parse(params.trial_params), { graduation_strategy: 'SS_PERFORMANCE' });
+});
+
+test('duas versões com a mesma legenda: a segunda não é confundida com a primeira', async () => {
+  const legenda = 'Seu cliente não sumiu.\n\n#followup';
+  // A versão A já saiu (está na fila com o id do Instagram) e aparece nos recentes.
+  const api = apiFalsa({
+    recentes: [{ id: 'versao-a', caption: legenda, timestamp: '2026-11-03T15:00:30+0000', permalink: LINK }],
+  });
+  const posts = [
+    post({ id: 'teste-a', teste: 'manual', instagram: { status: 'publicado', tentativas: 1, id_publicado: 'versao-a' } }),
+    post({ id: 'teste-b', teste: 'manual' }),
+  ];
+  const { fila, resultado } = rodar({ posts, api });
+  const resumo = await resultado;
+  assert.deepEqual(resumo.recuperados, []);
+  assert.deepEqual(resumo.publicados.map((p) => p.id), ['teste-b']);
+  assert.equal(fila.estado.posts[1].instagram.id_publicado, 'midia-1');
+});
+
+test('duas versões na mesma rodada: publica as duas', async () => {
+  const legenda = 'Seu cliente não sumiu.\n\n#followup';
+  let n = 0;
+  const api = apiFalsa();
+  // Depois de publicar a primeira, ela passa a aparecer nos recentes com a mesma legenda.
+  api.publicarContainer = async () => `midia-${++n}`;
+  api.mediasRecentes = async () =>
+    n ? [{ id: 'midia-1', caption: legenda, timestamp: '2026-11-03T15:01:30+0000' }] : [];
+  const posts = [post({ id: 'teste-a', teste: 'manual' }), post({ id: 'teste-b', teste: 'manual' })];
+  const { fila, resultado } = rodar({ posts, api });
+  const resumo = await resultado;
+  assert.deepEqual(resumo.publicados.map((p) => p.id), ['teste-a', 'teste-b']);
+  assert.deepEqual(fila.estado.posts.map((p) => p.instagram.id_publicado), ['midia-1', 'midia-2']);
+});

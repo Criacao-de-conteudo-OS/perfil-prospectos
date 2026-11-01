@@ -296,7 +296,7 @@
               <button class="post" type="button" data-abrir="${esc(p.id)}">
                 <span class="mini ${p.tipo === 'reel' ? '' : 'carrossel'}" ${capa ? `style="background-image:url('${esc(capa)}')"` : ''}></span>
                 <span>
-                  <span class="hora">${esc(fmtHora.format(new Date(quando(p))))} · ${esc(TIPOS[p.tipo] || p.tipo)}</span>
+                  <span class="hora">${esc(fmtHora.format(new Date(quando(p))))} · ${esc(TIPOS[p.tipo] || p.tipo)}${p.teste ? ' de teste' : ''}</span>
                   <span class="titulo-post">${esc(ganchoDe(p))}</span>
                   <span class="selo ${classe}">${esc(texto)}</span>
                 </span>
@@ -327,7 +327,7 @@
         <div class="info">
           <span class="selo ${classe}">${esc(texto)}</span>
           <h3>${esc(ganchoDe(p))}</h3>
-          <div class="meta">${esc(TIPOS[p.tipo] || p.tipo)} · ${publicado && publicadoEm ? 'publicado em ' + esc(fmtData.format(new Date(publicadoEm))) + ' às ' + esc(fmtHora.format(new Date(publicadoEm))) : 'agendado para ' + esc(fmtData.format(new Date(quando(p)))) + ' às ' + esc(fmtHora.format(new Date(quando(p))))}</div>
+          <div class="meta">${esc(TIPOS[p.tipo] || p.tipo)}${p.teste ? ' de teste (só para quem não segue)' : ''} · ${publicado && publicadoEm ? 'publicado em ' + esc(fmtData.format(new Date(publicadoEm))) + ' às ' + esc(fmtHora.format(new Date(publicadoEm))) : 'agendado para ' + esc(fmtData.format(new Date(quando(p)))) + ' às ' + esc(fmtHora.format(new Date(quando(p))))}</div>
           ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">Ver no Instagram</a>` : ''}
           <pre class="legenda">${esc(p.legenda)}</pre>
         </div>

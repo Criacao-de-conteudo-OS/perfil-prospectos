@@ -3,6 +3,10 @@ import { MAX_TENTATIVAS } from './config.js';
 
 export const TIPOS = ['reel', 'carrossel', 'imagem'];
 export const STATUS = ['pendente', 'publicado', 'falhou', 'pausado'];
+// Reel de teste: o Instagram mostra primeiro só para quem não segue a conta.
+// "manual": continua só para não seguidores até alguém liberar no app.
+// "automatico": o Instagram libera para os seguidores se o reel for bem.
+export const MODOS_TESTE = { manual: 'MANUAL', automatico: 'SS_PERFORMANCE' };
 
 const RE_ID = /^[a-z0-9][a-z0-9-]{2,79}$/;
 const RE_DATA = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
@@ -74,6 +78,7 @@ export function validarFila(fila) {
     }
     validarLegenda(post, onde, erros, avisos);
     validarMidias(post, onde, erros);
+    validarTeste(post, onde, erros);
     validarEstado(post, onde, erros);
   });
   return { erros, avisos };
@@ -117,6 +122,14 @@ function validarMidias(post, onde, erros) {
     else if (typeof post.capa !== 'string' || !RE_ARQUIVO.test(post.capa) || !RE_IMAGEM.test(post.capa)) {
       erros.push(`${onde}: a capa precisa ser um arquivo .jpg.`);
     }
+  }
+}
+
+function validarTeste(post, onde, erros) {
+  if (post.teste === undefined) return;
+  if (post.tipo !== 'reel') erros.push(`${onde}: "teste" (reel de teste) só vale para reel.`);
+  else if (!Object.hasOwn(MODOS_TESTE, post.teste)) {
+    erros.push(`${onde}: "teste" precisa ser ${Object.keys(MODOS_TESTE).join(' ou ')}.`);
   }
 }
 
