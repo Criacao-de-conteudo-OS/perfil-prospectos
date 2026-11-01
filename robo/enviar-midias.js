@@ -7,8 +7,9 @@
 //   pasta/2026-11-03-reel-cliente-sumiu/video.mp4
 //   pasta/2026-11-04-carrossel-follow-up/01.jpg ...
 //
-// A branch "site" é refeita do zero a cada envio, com um único commit. Assim as
-// mídias de posts já publicados saem de lá e o repositório não incha.
+// A branch "site" é refeita do zero a cada envio, com um único commit. As mídias
+// de posts publicados ficam lá por DIAS_DEPOIS_DE_PUBLICAR dias (para o painel
+// mostrar o que já saiu) e depois saem, para o repositório não inchar.
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -18,6 +19,13 @@ import { lerFila, statusDe, validarFila } from './fila.js';
 
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), '..');
 const MANTER = new Set(['pendente', 'falhou', 'pausado']);
+const DIAS_DEPOIS_DE_PUBLICAR = 14;
+
+function publicadoHaPouco(post, agora = Date.now()) {
+  if (statusDe(post) !== 'publicado') return false;
+  const quando = Date.parse(post.instagram?.publicado_em ?? post.agendado_para);
+  return Number.isFinite(quando) && agora - quando <= DIAS_DEPOIS_DE_PUBLICAR * 86_400_000;
+}
 
 function arquivosEm(pasta) {
   const lista = [];
@@ -53,6 +61,7 @@ function principal(argv) {
     return 1;
   }
   const manter = new Map(fila.posts.filter((p) => MANTER.has(statusDe(p))).map((p) => [p.id, p]));
+  const recentes = new Set(fila.posts.filter((p) => publicadoHaPouco(p)).map((p) => p.id));
   const arquivosDoPost = (post) => [...post.midias, ...(post.capa ? [post.capa] : [])];
 
   const temporario = mkdtempSync(join(tmpdir(), 'site-'));
@@ -89,7 +98,7 @@ function principal(argv) {
     }
     entradas.set('.nojekyll', ['100644', git(['hash-object', '-w', '--stdin'], '')]);
 
-    // 2. Mídias que já estão no ar e ainda vão ser usadas.
+    // 2. Mídias que já estão no ar e ainda vão ser usadas (ou que saíram há pouco, para o painel).
     let temSite = true;
     try {
       git(['fetch', '--quiet', 'origin', 'site']);
@@ -100,7 +109,8 @@ function principal(argv) {
       for (const linha of git(['ls-tree', '-r', 'FETCH_HEAD', '--', 'midia']).split('\n').filter(Boolean)) {
         const [info, caminho] = linha.split('\t');
         const [modo, , sha] = info.split(' ');
-        if (manter.has(caminho.split('/')[1])) entradas.set(caminho, [modo, sha]);
+        const id = caminho.split('/')[1];
+        if (manter.has(id) || recentes.has(id)) entradas.set(caminho, [modo, sha]);
       }
     }
 
@@ -150,7 +160,7 @@ function principal(argv) {
     const commit = git(['commit-tree', arvore, '-m', `site: páginas e mídias de ${manter.size} post(s) da fila`]);
 
     const url = urlDoSite(git);
-    console.log(`Site montado: ${entradas.size} arquivo(s), ${novas} mídia(s) nova(s), ${manter.size} post(s) na fila.`);
+    console.log(`Site montado: ${entradas.size} arquivo(s), ${novas} mídia(s) nova(s), ${manter.size} post(s) na fila, ${recentes.size} publicado(s) nos últimos ${DIAS_DEPOIS_DE_PUBLICAR} dias.`);
     if (ensaio) {
       console.log('Ensaio: montei o site, mas não enviei.');
       return 0;
