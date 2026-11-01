@@ -1,3 +1,159 @@
 {
-  "posts": []
+  "posts": [
+    {
+      "id": "reel-follow-up-que-fica-pra-depois",
+      "tipo": "reel",
+      "agendado_para": "2026-11-02T12:00:00-03:00",
+      "legenda": "70% do tempo do vendedor não é vendendo.\n\nÉ planilha, reunião interna, tarefa. E o follow-up é o primeiro a ficar pra depois.\n\nSó que quem manda 3 mensagens em vez de 1 recebe o dobro de respostas. A venda estava no contato que ninguém teve tempo de fazer.\n\nAntes da próxima proposta, deixa os 3 próximos contatos marcados.\n\nSalva pra revisar sua cadência amanhã.\n\nFontes: Salesforce, State of Sales (2024); Hunter, State of Email Outreach (2026). Telas com dados de demonstração.\n\n#followup #prospeccao #vendasb2b #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-03-reel-pare-de-comecar-com-tudo-bem",
+      "tipo": "reel",
+      "agendado_para": "2026-11-03T12:00:00-03:00",
+      "legenda": "Pare de começar com “Tudo bem?”.\n\nA primeira linha da mensagem de prospecção decide se o decisor lê o resto. “Oi, tudo bem?” não diz nada e ainda pede uma resposta que ele não deve.\n\nTroque por um motivo real: algo que você viu sobre a empresa e uma pergunta fácil de responder.\n\nSalva pra usar na próxima abordagem.\n\n#prospeccao #vendasb2b #prospeccaoativa #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "carrossel-3-mensagens-follow-up",
+      "tipo": "carrossel",
+      "agendado_para": "2026-11-03T19:00:00-03:00",
+      "legenda": "Follow-up não é cobrança.\n\nSe a sua mensagem só pergunta \"e aí, viu a proposta?\", ela não ajuda o cliente a decidir. Só lembra que ele está devendo uma resposta.\n\nNo carrossel: 3 mensagens prontas que trazem algo novo a cada contato.\n\nSalva pra usar na próxima e manda pra quem cuida das vendas aí.\n\n#prospeccao #vendasb2b #followup #gestaocomercial",
+      "midias": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg"
+      ],
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-04-reel-e-facil-o-vendedor-se-iludir",
+      "tipo": "reel",
+      "agendado_para": "2026-11-04T12:00:00-03:00",
+      "legenda": "Fechou duas vendas na semana. Foi uma boa semana?\n\nPode ser. Ou pode ser sorte. Sem saber quantos contatos vieram antes, quantos responderam e quantas reuniões aconteceram, não dá pra saber se você vendeu bem.\n\nVender não basta. Precisa vender melhor toda semana, e só melhora quem mede.\n\nManda pra quem cuida das vendas aí.\n\nTela com dados de demonstração.\n\n#gestaocomercial #indicadoresdevendas #vendasb2b #prospeccao",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-05-reel-quantos-contatos-antes-de-desistir-de-um-lead",
+      "tipo": "reel",
+      "agendado_para": "2026-11-05T12:00:00-03:00",
+      "legenda": "Quantas vezes você chama um lead antes de desistir?\n\nUma vez é pouco: quem manda 3 mensagens em vez de 1 recebe o dobro de respostas. Mas sequências longas demais perdem força.\n\nO equilíbrio: 3 mensagens, cada uma com algo novo. E saber em qual delas os seus clientes respondem.\n\nSalva pra montar a sua cadência.\n\nFonte: Hunter, State of Email Outreach (2026). Tela com dados de demonstração.\n\n#followup #cadencia #prospeccao #vendasb2b",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-05-carrossel-os-4-numeros-que-todo-gestor-deveria-olhar-toda",
+      "tipo": "carrossel",
+      "agendado_para": "2026-11-05T19:00:00-03:00",
+      "legenda": "4 números para olhar toda segunda-feira.\n\nA venda é o último número. Quando ela cai, o problema começou semanas antes. Contatos, respostas e reuniões mostram isso antes.\n\nNo carrossel: o que cada número diz e o que fazer quando ele cai.\n\nSalva pra usar na reunião de segunda.\n\nTela com dados de demonstração.\n\n#gestaocomercial #indicadoresdevendas #vendasb2b #prospeccao",
+      "midias": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg"
+      ],
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-06-reel-mandar-em-volume-nao-e-o-problema",
+      "tipo": "reel",
+      "agendado_para": "2026-11-06T12:00:00-03:00",
+      "legenda": "Mandar em volume não é o problema. O problema é como.\n\nO risco aparece quando a mensagem é genérica, vai pra quem não esperava e sai toda de uma vez.\n\n4 cuidados: público certo, primeira linha pessoal, envio aos poucos com limite por dia e uma forma fácil de sair da lista.\n\nManda pra quem faz os disparos aí.\n\n#prospeccao #whatsappbusiness #vendasb2b #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-07-reel-o-lead-respondeu-as-22h-quem-viu",
+      "tipo": "reel",
+      "agendado_para": "2026-11-07T12:00:00-03:00",
+      "legenda": "O lead respondeu às 22h. Quem viu?\n\nResposta no WhatsApp de um vendedor, no e-mail de outro, e no dia seguinte a conversa já esfriou. Resposta perdida não aparece em relatório nenhum. Ela só some.\n\nNo ProspectOS, toda resposta cai num lugar só e o vendedor responsável recebe um aviso na hora.\n\nComenta: quantas respostas você acha que perde por semana?\n\nTela com dados de demonstração.\n\n#prospeccao #followup #vendasb2b #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-07-carrossel-a-primeira-mensagem-para-um-decisor-que-nao-te-c",
+      "tipo": "carrossel",
+      "agendado_para": "2026-11-07T19:00:00-03:00",
+      "legenda": "Como abordar um decisor que nunca ouviu falar de você.\n\nMensagem que fala de você, é longa e pede demais não recebe resposta.\n\nNo carrossel: a estrutura em 3 linhas (contexto, problema, pergunta) e 2 exemplos para adaptar.\n\nSalva pra usar na próxima abordagem.\n\n#prospeccao #vendasb2b #prospeccaoativa #gestaocomercial",
+      "midias": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg"
+      ],
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-08-reel-seu-cliente-nao-sumiu",
+      "tipo": "reel",
+      "agendado_para": "2026-11-08T12:00:00-03:00",
+      "legenda": "Seu cliente não sumiu. Ele ficou ocupado, e você parou de chamar.\n\nMuita venda não morre no “não”. Morre no silêncio depois da proposta.\n\n3 coisas mudam isso: decidir antes quantos contatos fazer e em quais dias, levar algo novo em cada mensagem e registrar tudo num lugar só.\n\nSalva esse vídeo pra próxima proposta.\n\nTela com dados de demonstração.\n\n#followup #vendasb2b #prospeccao #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    }
+  ]
 }
