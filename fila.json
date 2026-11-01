@@ -66,6 +66,36 @@
       }
     },
     {
+      "id": "teste-voz-follow-up-raquel",
+      "tipo": "reel",
+      "agendado_para": "2026-11-03T17:00:00-03:00",
+      "legenda": "70% do tempo do vendedor não é vendendo.\n\nÉ planilha, reunião interna, tarefa. E o follow-up é o primeiro a ficar pra depois.\n\nSó que quem manda 3 mensagens em vez de 1 recebe o dobro de respostas. A venda estava no contato que ninguém teve tempo de fazer.\n\nAntes da próxima proposta, deixa os 3 próximos contatos marcados.\n\nSalva pra revisar sua cadência amanhã.\n\nFontes: Salesforce, State of Sales (2024); Hunter, State of Email Outreach (2026). Telas com dados de demonstração.\n\n#followup #prospeccao #vendasb2b #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "teste": "manual",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "teste-voz-follow-up-paulo",
+      "tipo": "reel",
+      "agendado_para": "2026-11-03T17:03:00-03:00",
+      "legenda": "70% do tempo do vendedor não é vendendo.\n\nÉ planilha, reunião interna, tarefa. E o follow-up é o primeiro a ficar pra depois.\n\nSó que quem manda 3 mensagens em vez de 1 recebe o dobro de respostas. A venda estava no contato que ninguém teve tempo de fazer.\n\nAntes da próxima proposta, deixa os 3 próximos contatos marcados.\n\nSalva pra revisar sua cadência amanhã.\n\nFontes: Salesforce, State of Sales (2024); Hunter, State of Email Outreach (2026). Telas com dados de demonstração.\n\n#followup #prospeccao #vendasb2b #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "teste": "manual",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
       "id": "2026-11-05-reel-quantos-contatos-antes-de-desistir-de-um-lead",
       "tipo": "reel",
       "agendado_para": "2026-11-04T12:00:00-03:00",
@@ -74,6 +104,36 @@
         "video.mp4"
       ],
       "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "teste-voz-tudo-bem-paulo",
+      "tipo": "reel",
+      "agendado_para": "2026-11-04T17:00:00-03:00",
+      "legenda": "Pare de começar com “Tudo bem?”.\n\nA primeira linha da mensagem de prospecção decide se o decisor lê o resto. “Oi, tudo bem?” não diz nada e ainda pede uma resposta que ele não deve.\n\nTroque por um motivo real: algo que você viu sobre a empresa e uma pergunta fácil de responder.\n\nSalva pra usar na próxima abordagem.\n\n#prospeccao #vendasb2b #prospeccaoativa #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "teste": "manual",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "teste-voz-tudo-bem-raquel",
+      "tipo": "reel",
+      "agendado_para": "2026-11-04T17:03:00-03:00",
+      "legenda": "Pare de começar com “Tudo bem?”.\n\nA primeira linha da mensagem de prospecção decide se o decisor lê o resto. “Oi, tudo bem?” não diz nada e ainda pede uma resposta que ele não deve.\n\nTroque por um motivo real: algo que você viu sobre a empresa e uma pergunta fácil de responder.\n\nSalva pra usar na próxima abordagem.\n\n#prospeccao #vendasb2b #prospeccaoativa #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "teste": "manual",
       "instagram": {
         "status": "pendente",
         "tentativas": 0
@@ -107,6 +167,36 @@
         "video.mp4"
       ],
       "capa": "capa.jpg",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "teste-voz-se-iludir-raquel",
+      "tipo": "reel",
+      "agendado_para": "2026-11-05T17:00:00-03:00",
+      "legenda": "Fechou duas vendas na semana. Foi uma boa semana?\n\nPode ser. Ou pode ser sorte. Sem saber quantos contatos vieram antes, quantos responderam e quantas reuniões aconteceram, não dá pra saber se você vendeu bem.\n\nVender não basta. Precisa vender melhor toda semana, e só melhora quem mede.\n\nManda pra quem cuida das vendas aí.\n\nTela com dados de demonstração.\n\n#gestaocomercial #indicadoresdevendas #vendasb2b #prospeccao",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "teste": "manual",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "teste-voz-se-iludir-paulo",
+      "tipo": "reel",
+      "agendado_para": "2026-11-05T17:03:00-03:00",
+      "legenda": "Fechou duas vendas na semana. Foi uma boa semana?\n\nPode ser. Ou pode ser sorte. Sem saber quantos contatos vieram antes, quantos responderam e quantas reuniões aconteceram, não dá pra saber se você vendeu bem.\n\nVender não basta. Precisa vender melhor toda semana, e só melhora quem mede.\n\nManda pra quem cuida das vendas aí.\n\nTela com dados de demonstração.\n\n#gestaocomercial #indicadoresdevendas #vendasb2b #prospeccao",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "teste": "manual",
       "instagram": {
         "status": "pendente",
         "tentativas": 0
