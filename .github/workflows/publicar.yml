@@ -1,10 +1,13 @@
 name: Publicar no Instagram
 
 on:
-  # Toda hora, aos 7 minutos. Se o próximo post sai em até 75 min, o robô
-  # espera por ele e publica na hora certa.
+  # Só de dia: das 5h às 21h de Brasília (8h às 0h em UTC), quatro vezes por hora.
+  # Os posts saem nas janelas do plano (manhã 7h-10h, almoço 12h-13h30, noite
+  # 18h30-21h), então de madrugada o robô dorme. O GitHub costuma pular muitas
+  # destas rodadas; por isso a rodada que acorda espera até 5h20 pelo próximo
+  # post e publica na hora certa.
   schedule:
-    - cron: "7 * * * *"
+    - cron: "7,22,37,52 8-23 * * *"
   # Quando a fábrica envia posts novos.
   push:
     branches: [main]
@@ -23,15 +26,42 @@ on:
 
 permissions:
   contents: write
-
-concurrency:
-  group: publicar
-  cancel-in-progress: false
+  actions: read
 
 jobs:
-  publicar:
+  # Se outra rodada já está esperando o próximo post, a rodada da agenda não
+  # precisa fazer nada. Assim ela termina na hora, em vez de ficar na fila
+  # e ser cancelada.
+  porteiro:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 5
+    outputs:
+      seguir: ${{ steps.ver.outputs.seguir }}
+    steps:
+      - id: ver
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          seguir=sim
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            antes=$(gh api "repos/${{ github.repository }}/actions/workflows/publicar.yml/runs?status=in_progress&per_page=30" \
+              --jq '[.workflow_runs[] | select(.id < ${{ github.run_id }})] | length')
+            if [ "$antes" -gt 0 ]; then
+              seguir=nao
+              echo "Outra rodada já está cuidando da fila. Nada a fazer." | tee -a "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+          echo "seguir=$seguir" >> "$GITHUB_OUTPUT"
+
+  publicar:
+    needs: porteiro
+    if: needs.porteiro.outputs.seguir == 'sim'
+    runs-on: ubuntu-latest
+    # A espera vai até 5h20; o resto dá folga para o Instagram processar o vídeo.
+    timeout-minutes: 355
+    concurrency:
+      group: publicar
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
 

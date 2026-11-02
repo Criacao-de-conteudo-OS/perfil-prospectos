@@ -59,7 +59,7 @@ async function principal() {
 
   const faltam = configFaltando(cfg);
   if (!ensaio && faltam.length) {
-    // Antes de configurar o Instagram, as rodadas de hora em hora só conferem a fila.
+    // Antes de configurar o Instagram, as rodadas da agenda só conferem a fila.
     const fila = carregarFila();
     const agora = new Date();
     const proximo = proximoPendente(fila, agora);

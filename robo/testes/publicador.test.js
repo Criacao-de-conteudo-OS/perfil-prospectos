@@ -206,7 +206,7 @@ test('mídia fora do ar vira falha clara, sem chamar o Instagram', async () => {
   assert.equal(fila.estado.posts[0].instagram.tentativas, 1);
 });
 
-test('espera o próximo post se ele sai em menos de 75 minutos', async () => {
+test('espera o próximo post se ele sai em menos de 5h20', async () => {
   const api = apiFalsa();
   // 11h20 em Brasília; o post é às 12h.
   const { tempo, resultado } = rodar({ posts: [post()], api, inicio: '2026-11-03T14:20:00Z' });
@@ -217,10 +217,20 @@ test('espera o próximo post se ele sai em menos de 75 minutos', async () => {
   assert.equal(resumo.proximo, null);
 });
 
+test('espera horas pelo post da janela seguinte', async () => {
+  const api = apiFalsa();
+  // 8h em Brasília; o post é às 12h.
+  const { tempo, resultado } = rodar({ posts: [post()], api, inicio: '2026-11-03T11:00:00Z' });
+  const resumo = await resultado;
+  assert.deepEqual(resumo.publicados.map((p) => p.id), ['reel-1']);
+  assert.equal(tempo.sonos.length, 1);
+  assert.ok(tempo.relogio() >= new Date('2026-11-03T15:00:00Z'));
+});
+
 test('não espera se o próximo post está longe', async () => {
   const api = apiFalsa();
-  // 9h em Brasília; o post é às 12h.
-  const { tempo, resultado } = rodar({ posts: [post()], api, inicio: '2026-11-03T12:00:00Z' });
+  // 6h em Brasília; o post é às 12h (6 horas depois).
+  const { tempo, resultado } = rodar({ posts: [post()], api, inicio: '2026-11-03T09:00:00Z' });
   const resumo = await resultado;
   assert.deepEqual(resumo.publicados, []);
   assert.deepEqual(tempo.sonos, []);

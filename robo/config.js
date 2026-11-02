@@ -1,8 +1,9 @@
 export const MAX_TENTATIVAS = 3;
 
-// Se o próximo post sai em até 75 minutos, o robô espera por ele em vez de
-// depender da próxima rodada de hora em hora (que o GitHub costuma atrasar).
-export const JANELA_ESPERA_MIN = 75;
+// Se o próximo post sai em até 5h20, o robô espera por ele em vez de depender
+// da próxima rodada da agenda (o GitHub costuma pular várias seguidas).
+// O limite de uma rodada no GitHub é 6h; o resto fica de folga para publicar.
+export const JANELA_ESPERA_MIN = 320;
 
 export const VERSAO_API_PADRAO = 'v26.0';
 

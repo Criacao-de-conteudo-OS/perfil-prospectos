@@ -13,13 +13,14 @@ fábrica (segunda-feira)
   ├─ envia as mídias da semana  → branch "site" (GitHub Pages, link público)
   └─ adiciona os posts na fila  → fila.json (branch main)
 
-robô (GitHub Actions, toda hora)
+robô (GitHub Actions, de dia)
   ├─ pega os posts que passaram da hora
   ├─ manda para o Instagram (API oficial, com o link público da mídia)
   └─ anota o resultado na fila: publicado, ou o erro e a tentativa
 ```
 
-- Roda **de hora em hora**, aos 7 minutos. Se o próximo post sai em até 75 minutos, o robô espera por ele e publica na hora certa.
+- Roda **só de dia**, das 5h às 21h de Brasília, quatro vezes por hora (aos 7, 22, 37 e 52 minutos). De madrugada não há posts, e o robô dorme.
+- O GitHub costuma pular várias rodadas seguidas. Por isso, se o próximo post sai em até **5h20**, o robô espera por ele e publica na hora certa. Enquanto uma rodada espera, as outras da agenda veem isso e terminam na hora.
 - Se der erro, tenta de novo na rodada seguinte. Depois de **3 tentativas**, desiste e o post aparece em "Com problema" no painel.
 - Antes de publicar, confere se o mesmo post já está no Instagram. Isso evita publicar duas vezes se uma rodada cair no meio.
 - A chave de acesso é de um **usuário do sistema** do portfólio da Meta e **não expira**.
