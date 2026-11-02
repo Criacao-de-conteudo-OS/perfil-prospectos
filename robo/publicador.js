@@ -62,6 +62,46 @@ async function criarComRotuloIa(api, params, post, log) {
   }
 }
 
+// Reel de teste (Reels de teste do Instagram): vai só para quem não segue a conta.
+// Conta nova ou com poucos seguidores pode não ter o recurso. Se o Instagram recusar,
+// o robô publica o reel normal, como o plano da semana pede ("se a conta tiver").
+// Falha de rede ou de processamento do vídeo não conta como recusa: ali o reel
+// normal falharia igual, e a próxima rodada tenta de novo do jeito certo.
+function recusouModoTeste(erro) {
+  if (erro.tokenInvalido || erro.temporario) return false;
+  return erro.codigo !== null || /trial/i.test(erro.message);
+}
+
+async function criarReel(api, post, { url, urlSite, log, teste }) {
+  const params = { media_type: 'REELS', video_url: url, caption: post.legenda };
+  if (teste) {
+    params.trial_params = JSON.stringify({ graduation_strategy: MODOS_TESTE[post.teste] });
+  } else {
+    params.share_to_feed = 'true';
+  }
+  if (post.capa) params.cover_url = urlDaMidia(urlSite, post, post.capa);
+  const container = await criarComRotuloIa(api, params, post, log);
+  await api.aguardarContainer(container, { video: true });
+  return container;
+}
+
+async function publicarContainerComLink(api, container) {
+  const idPublicado = await api.publicarContainer(container);
+  const link = await api.buscarLink(idPublicado);
+  return { idPublicado, link, recuperado: false };
+}
+
+async function publicarReelDeTeste(post, { api, url, urlSite, log }) {
+  try {
+    return await publicarContainerComLink(api, await criarReel(api, post, { url, urlSite, log, teste: true }));
+  } catch (erro) {
+    if (!recusouModoTeste(erro)) throw erro;
+    log(`Aviso: o Instagram recusou o reel de teste "${post.id}" (${erro.message}). Publicando como reel normal.`);
+  }
+  const resultado = await publicarContainerComLink(api, await criarReel(api, post, { url, urlSite, log, teste: false }));
+  return { ...resultado, testeRecusado: true };
+}
+
 export async function publicarPost(post, { api, urlSite, verificarUrl, agora, log = () => {}, idsUsados = new Set() }) {
   const existente = await procurarJaPublicado(post, { api, agora, log, idsUsados });
   if (existente) return { ...existente, recuperado: true };
@@ -76,16 +116,8 @@ export async function publicarPost(post, { api, urlSite, verificarUrl, agora, lo
     container = await api.criarContainer({ image_url: urls[0], caption: post.legenda });
     await api.aguardarContainer(container, { video: false });
   } else if (post.tipo === 'reel') {
-    const params = { media_type: 'REELS', video_url: urls[0], caption: post.legenda };
-    if (post.teste) {
-      // Reel de teste: vai primeiro só para quem não segue a conta.
-      params.trial_params = JSON.stringify({ graduation_strategy: MODOS_TESTE[post.teste] });
-    } else {
-      params.share_to_feed = 'true';
-    }
-    if (post.capa) params.cover_url = urlDaMidia(urlSite, post, post.capa);
-    container = await criarComRotuloIa(api, params, post, log);
-    await api.aguardarContainer(container, { video: true });
+    if (post.teste) return publicarReelDeTeste(post, { api, url: urls[0], urlSite, log });
+    container = await criarReel(api, post, { url: urls[0], urlSite, log, teste: false });
   } else if (post.tipo === 'carrossel') {
     const filhos = [];
     for (const url of urls) {
@@ -106,9 +138,7 @@ export async function publicarPost(post, { api, urlSite, verificarUrl, agora, lo
     throw new ErroInstagram(`Tipo de post desconhecido: ${post.tipo}`);
   }
 
-  const idPublicado = await api.publicarContainer(container);
-  const link = await api.buscarLink(idPublicado);
-  return { idPublicado, link, recuperado: false };
+  return publicarContainerComLink(api, container);
 }
 
 async function ensaiar(post, { urlSite, verificarUrl, log }) {
@@ -185,7 +215,7 @@ export async function executar({
 
       // Fora do try: se salvar a fila falhar, o post continua publicado e a
       // próxima rodada o reconhece pela legenda, em vez de contar como falha.
-      const { idPublicado, link, recuperado } = resultado;
+      const { idPublicado, link, recuperado, testeRecusado } = resultado;
       idsUsados.add(idPublicado);
       await salvarMudanca(
         post.id,
@@ -196,10 +226,12 @@ export async function executar({
           link,
           publicado_em: relogio().toISOString(),
           ultimo_erro: null,
+          // Saiu como reel normal porque o Instagram recusou o modo teste.
+          ...(testeRecusado ? { teste_recusado: true } : {}),
         },
         recuperado ? `robô: ${post.id} já estava publicado` : `robô: publicou ${post.id}`,
       );
-      (recuperado ? resumo.recuperados : resumo.publicados).push({ id: post.id, link });
+      (recuperado ? resumo.recuperados : resumo.publicados).push({ id: post.id, link, ...(testeRecusado ? { testeRecusado } : {}) });
       log(recuperado ? `"${post.id}" já estava no Instagram; só atualizei a fila.` : `Publicado: ${link ?? idPublicado}`);
     }
 
@@ -221,7 +253,8 @@ export function resumoEmMarkdown(resumo) {
   const linhas = [];
   if (resumo.interrompido) linhas.push(`**Parei:** ${resumo.interrompido}`, '');
   for (const p of resumo.publicados) {
-    linhas.push(`- ✅ Publicado: \`${p.id}\`${p.link ? ` ([ver no Instagram](${p.link}))` : ''}`);
+    const aviso = p.testeRecusado ? ' — saiu como reel normal: o Instagram recusou o modo teste' : '';
+    linhas.push(`- ✅ Publicado: \`${p.id}\`${p.link ? ` ([ver no Instagram](${p.link}))` : ''}${aviso}`);
   }
   for (const p of resumo.recuperados) linhas.push(`- ✅ Já estava publicado: \`${p.id}\``);
   for (const f of resumo.falhas) {

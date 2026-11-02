@@ -205,6 +205,8 @@
 
   const statusDe = (p) => (p.instagram && p.instagram.status) || 'pendente';
   const tentativas = (p) => (p.instagram && p.instagram.tentativas) || 0;
+  // Reel de teste que o Instagram recusou sai como reel normal.
+  const emTeste = (p) => Boolean(p.teste) && !(p.instagram && p.instagram.teste_recusado);
   const quando = (p) => Date.parse(p.agendado_para);
   const midia = (p, arquivo) => `midia/${encodeURIComponent(p.id)}/${encodeURIComponent(arquivo)}`;
   const capaDe = (p) => (p.capa ? midia(p, p.capa) : p.tipo !== 'reel' && p.midias && p.midias[0] ? midia(p, p.midias[0]) : null);
@@ -296,7 +298,7 @@
               <button class="post" type="button" data-abrir="${esc(p.id)}">
                 <span class="mini ${p.tipo === 'reel' ? '' : 'carrossel'}" ${capa ? `style="background-image:url('${esc(capa)}')"` : ''}></span>
                 <span>
-                  <span class="hora">${esc(fmtHora.format(new Date(quando(p))))} · ${esc(TIPOS[p.tipo] || p.tipo)}${p.teste ? ' de teste' : ''}</span>
+                  <span class="hora">${esc(fmtHora.format(new Date(quando(p))))} · ${esc(TIPOS[p.tipo] || p.tipo)}${emTeste(p) ? ' de teste' : ''}</span>
                   <span class="titulo-post">${esc(ganchoDe(p))}</span>
                   <span class="selo ${classe}">${esc(texto)}</span>
                 </span>
@@ -327,7 +329,7 @@
         <div class="info">
           <span class="selo ${classe}">${esc(texto)}</span>
           <h3>${esc(ganchoDe(p))}</h3>
-          <div class="meta">${esc(TIPOS[p.tipo] || p.tipo)}${p.teste ? ' de teste (só para quem não segue)' : ''} · ${publicado && publicadoEm ? 'publicado em ' + esc(fmtData.format(new Date(publicadoEm))) + ' às ' + esc(fmtHora.format(new Date(publicadoEm))) : 'agendado para ' + esc(fmtData.format(new Date(quando(p)))) + ' às ' + esc(fmtHora.format(new Date(quando(p))))}</div>
+          <div class="meta">${esc(TIPOS[p.tipo] || p.tipo)}${emTeste(p) ? ' de teste (só para quem não segue)' : ''}${p.instagram && p.instagram.teste_recusado ? ' (era de teste, mas o Instagram recusou o modo teste e saiu normal)' : ''} ·${publicado && publicadoEm ? 'publicado em ' + esc(fmtData.format(new Date(publicadoEm))) + ' às ' + esc(fmtHora.format(new Date(publicadoEm))) : 'agendado para ' + esc(fmtData.format(new Date(quando(p)))) + ' às ' + esc(fmtHora.format(new Date(quando(p))))}</div>
           ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">Ver no Instagram</a>` : ''}
           <pre class="legenda">${esc(p.legenda)}</pre>
         </div>

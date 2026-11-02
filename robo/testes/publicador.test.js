@@ -339,6 +339,72 @@ test('duas versões na mesma rodada: publica as duas', async () => {
   assert.deepEqual(fila.estado.posts.map((p) => p.instagram.id_publicado), ['midia-1', 'midia-2']);
 });
 
+const recusaDoTeste = () =>
+  new ErroInstagram('O Instagram respondeu 400 (código 100): Trial reels are not available for this account', { codigo: 100 });
+
+test('se o Instagram recusar o reel de teste, publica como reel normal e marca na fila', async () => {
+  const api = apiFalsa();
+  const criar = api.criarContainer;
+  api.criarContainer = async (params) => {
+    if (params.trial_params) {
+      api.chamadas.push(['criar', params]);
+      throw recusaDoTeste();
+    }
+    return criar(params);
+  };
+  const avisos = [];
+  const { fila, resultado } = rodar({ posts: [post({ teste: 'manual' })], api, log: (m) => avisos.push(m) });
+  const resumo = await resultado;
+
+  assert.deepEqual(resumo.publicados, [{ id: 'reel-1', link: LINK, testeRecusado: true }]);
+  const criados = api.chamadas.filter(([tipo]) => tipo === 'criar').map(([, params]) => params);
+  assert.equal(criados.length, 2);
+  assert.equal('trial_params' in criados[1], false);
+  assert.equal(criados[1].share_to_feed, 'true');
+  assert.equal(fila.estado.posts[0].instagram.status, 'publicado');
+  assert.equal(fila.estado.posts[0].instagram.teste_recusado, true);
+  assert.ok(avisos.some((m) => m.includes('recusou o reel de teste')));
+  assert.match(resumoEmMarkdown(resumo), /recusou o modo teste/);
+});
+
+test('se a recusa do teste vier na hora de publicar, refaz como reel normal', async () => {
+  const api = apiFalsa();
+  api.publicarContainer = async (id) => {
+    api.chamadas.push(['publicar', id]);
+    if (id === 'c1') throw recusaDoTeste();
+    return 'midia-2';
+  };
+  const { fila, resultado } = rodar({ posts: [post({ teste: 'manual' })], api });
+  const resumo = await resultado;
+
+  assert.equal(resumo.publicados.length, 1);
+  assert.deepEqual(api.chamadas.filter(([tipo]) => tipo === 'publicar'), [['publicar', 'c1'], ['publicar', 'c2']]);
+  assert.equal(fila.estado.posts[0].instagram.id_publicado, 'midia-2');
+  assert.equal(fila.estado.posts[0].instagram.teste_recusado, true);
+});
+
+test('falha de rede no reel de teste não vira reel normal', async () => {
+  const erro = new ErroInstagram('Falha de rede ao falar com o Instagram: timeout', { temporario: true });
+  const api = apiFalsa({ erro, erroEm: 'criar' });
+  const { fila, resultado } = rodar({ posts: [post({ teste: 'manual' })], api });
+  const resumo = await resultado;
+
+  assert.equal(resumo.falhas.length, 1);
+  assert.equal(api.chamadas.filter(([tipo]) => tipo === 'criar').length, 1);
+  assert.equal(fila.estado.posts[0].instagram.status, 'pendente');
+  assert.equal(fila.estado.posts[0].instagram.teste_recusado, undefined);
+});
+
+test('erro ao processar o vídeo do reel de teste não vira reel normal', async () => {
+  const erro = new ErroInstagram('O Instagram não conseguiu processar a mídia (ERROR): sem detalhe');
+  const api = apiFalsa({ erro, erroEm: 'aguardar' });
+  const { resultado } = rodar({ posts: [post({ teste: 'manual' })], api });
+  const resumo = await resultado;
+
+  assert.equal(resumo.falhas.length, 1);
+  assert.equal(api.chamadas.filter(([tipo]) => tipo === 'criar').length, 1);
+});
+
 test('reel com "ia" leva o rótulo is_ai_generated', async () => {
   const api = apiFalsa();
   await rodar({ posts: [post({ ia: true })], api }).resultado;
