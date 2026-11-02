@@ -28,6 +28,22 @@
       ],
       "capa": "capa.jpg",
       "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-02-reel-lista-de-lead-paulo",
+      "tipo": "reel",
+      "agendado_para": "2026-11-02T12:00:00-03:00",
+      "legenda": "Quanto tempo você perdeu essa semana montando lista de lead?\n\nPlanilha que não termina, copia e cola, um monte de abas pra achar um e-mail. E quando o lead finalmente responde, ninguém vê a tempo.\n\nProspecção não devia começar com uma tarde de planilha.\n\nComenta EU que eu te mostro como.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#prospeccao #vendasb2b #leads #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "instagram": {
         "status": "pendente",
         "tentativas": 0
       }
@@ -37,6 +53,26 @@
       "tipo": "carrossel",
       "agendado_para": "2026-11-02T19:00:00-03:00",
       "legenda": "Follow-up não é cobrança.\n\nSe a sua mensagem só pergunta \"e aí, viu a proposta?\", ela não ajuda o cliente a decidir. Só lembra que ele está devendo uma resposta.\n\nNo carrossel: 3 mensagens prontas que trazem algo novo a cada contato.\n\nSalva pra usar na próxima e manda pra quem cuida das vendas aí.\n\n#prospeccao #vendasb2b #followup #gestaocomercial",
+      "midias": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg"
+      ],
+      "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-03-carrossel-5-erros-que-matam-uma-cadencia",
+      "tipo": "carrossel",
+      "agendado_para": "2026-11-03T07:30:00-03:00",
+      "legenda": "5 erros que matam uma cadência de prospecção.\n\nParar no primeiro contato, mandar mensagem que só cobra, deixar o follow-up sem dia, insistir sem fim e continuar mandando pra quem já respondeu.\n\nQuantos estão na sua?\n\nSalva pra revisar a sua cadência.\n\nFonte: Hunter, State of Email Outreach (2026).\n\n#prospeccao #vendasb2b #followup #gestaocomercial",
       "midias": [
         "01.jpg",
         "02.jpg",
@@ -61,8 +97,9 @@
       ],
       "capa": "capa.jpg",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -76,8 +113,9 @@
       "capa": "capa.jpg",
       "teste": "manual",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -91,8 +129,9 @@
       "capa": "capa.jpg",
       "teste": "manual",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -104,6 +143,23 @@
         "video.mp4"
       ],
       "capa": "capa.jpg",
+      "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-04-reel-lista-de-lead-raquel",
+      "tipo": "reel",
+      "agendado_para": "2026-11-04T12:30:00-03:00",
+      "legenda": "Quanto tempo você perdeu essa semana montando lista de lead?\n\nPlanilha que não termina, copia e cola, um monte de abas pra achar um e-mail. E quando o lead finalmente responde, ninguém vê a tempo.\n\nProspecção não devia começar com uma tarde de planilha.\n\nComenta EU que eu te mostro como.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#prospeccao #vendasb2b #leads #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "teste": "manual",
       "instagram": {
         "status": "pendente",
         "tentativas": 0
@@ -120,8 +176,9 @@
       "capa": "capa.jpg",
       "teste": "manual",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -135,8 +192,9 @@
       "capa": "capa.jpg",
       "teste": "manual",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -154,8 +212,9 @@
         "07.jpg"
       ],
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -168,8 +227,9 @@
       ],
       "capa": "capa.jpg",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -183,8 +243,9 @@
       "capa": "capa.jpg",
       "teste": "manual",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -197,6 +258,41 @@
       ],
       "capa": "capa.jpg",
       "teste": "manual",
+      "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-05-reel-do-lead-ao-primeiro-contato-paulo",
+      "tipo": "reel",
+      "agendado_para": "2026-11-05T19:00:00-03:00",
+      "legenda": "Do lead ao primeiro contato em menos de 1 minuto.\n\nEscolhe o lead, a mensagem já vem pronta com o nome dele e da empresa, e o envio fica registrado na cadência.\n\nSem planilha. Sem copiar e colar.\n\nQuer testar? Link na bio.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#prospeccao #vendasb2b #automacaodevendas #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-06-carrossel-planilha-vs-prospectos",
+      "tipo": "carrossel",
+      "agendado_para": "2026-11-06T08:00:00-03:00",
+      "legenda": "Planilha vs. ProspectOS.\n\nPlanilha anota. Mas quem lembra do follow-up, quem vê a resposta que chegou às 22h e quem sabe qual mensagem funciona?\n\nNo carrossel, 4 pontos lado a lado.\n\nManda pra quem ainda controla a prospecção na planilha.\n\nTela com dados de demonstração.\n\n#prospeccao #vendasb2b #automacaodevendas #gestaocomercial",
+      "midias": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg"
+      ],
       "instagram": {
         "status": "pendente",
         "tentativas": 0
@@ -212,8 +308,9 @@
       ],
       "capa": "capa.jpg",
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -231,8 +328,9 @@
         "07.jpg"
       ],
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
       }
     },
     {
@@ -244,6 +342,42 @@
         "video.mp4"
       ],
       "capa": "capa.jpg",
+      "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-07-reel-do-lead-ao-primeiro-contato-raquel",
+      "tipo": "reel",
+      "agendado_para": "2026-11-07T19:30:00-03:00",
+      "legenda": "Do lead ao primeiro contato em menos de 1 minuto.\n\nEscolhe o lead, a mensagem já vem pronta com o nome dele e da empresa, e o envio fica registrado na cadência.\n\nSem planilha. Sem copiar e colar.\n\nQuer testar? Link na bio.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#prospeccao #vendasb2b #automacaodevendas #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "teste": "manual",
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
+      "id": "2026-11-08-carrossel-3-mensagens-de-abordagem",
+      "tipo": "carrossel",
+      "agendado_para": "2026-11-08T10:00:00-03:00",
+      "legenda": "3 mensagens de abordagem pra copiar.\n\nPrimeira mensagem que fala de você, é longa e pede demais não recebe resposta. Uma estrutura simples cabe em 3 linhas: contexto real, o problema e uma pergunta fácil.\n\nSalva pra usar na próxima abordagem. E se quiser ver isso rodando na sua base, o link da bio leva pra uma demonstração.\n\n#prospeccao #vendasb2b #prospeccaoativa #gestaocomercial",
+      "midias": [
+        "01.jpg",
+        "02.jpg",
+        "03.jpg",
+        "04.jpg",
+        "05.jpg",
+        "06.jpg",
+        "07.jpg"
+      ],
       "instagram": {
         "status": "pendente",
         "tentativas": 0
