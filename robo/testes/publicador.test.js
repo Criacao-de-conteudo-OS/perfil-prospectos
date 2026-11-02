@@ -328,3 +328,30 @@ test('duas versões na mesma rodada: publica as duas', async () => {
   assert.deepEqual(resumo.publicados.map((p) => p.id), ['teste-a', 'teste-b']);
   assert.deepEqual(fila.estado.posts.map((p) => p.instagram.id_publicado), ['midia-1', 'midia-2']);
 });
+
+test('reel com "ia" leva o rótulo is_ai_generated', async () => {
+  const api = apiFalsa();
+  await rodar({ posts: [post({ ia: true })], api }).resultado;
+  const [, params] = api.chamadas.find(([tipo]) => tipo === 'criar');
+  assert.equal(params.is_ai_generated, 'true');
+});
+
+test('sem "ia", não manda o rótulo', async () => {
+  const api = apiFalsa();
+  await rodar({ posts: [post()], api }).resultado;
+  const [, params] = api.chamadas.find(([tipo]) => tipo === 'criar');
+  assert.equal('is_ai_generated' in params, false);
+});
+
+test('se o Instagram recusar o rótulo de IA, publica sem ele e avisa', async () => {
+  const api = apiFalsa();
+  const criar = api.criarContainer;
+  api.criarContainer = async (params) => {
+    if (params.is_ai_generated) throw new ErroInstagram('O Instagram respondeu 400: Invalid parameter is_ai_generated');
+    return criar(params);
+  };
+  const avisos = [];
+  const { resultado } = rodar({ posts: [post({ ia: true })], api, log: (m) => avisos.push(m) });
+  assert.equal((await resultado).publicados.length, 1);
+  assert.ok(avisos.some((m) => m.includes('rótulo de IA')));
+});

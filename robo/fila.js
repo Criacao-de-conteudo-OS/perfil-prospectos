@@ -126,6 +126,7 @@ function validarMidias(post, onde, erros) {
 }
 
 function validarTeste(post, onde, erros) {
+  if (post.ia !== undefined && typeof post.ia !== 'boolean') erros.push(`${onde}: "ia" (rótulo de conteúdo de IA) precisa ser true ou false.`);
   if (post.teste === undefined) return;
   if (post.tipo !== 'reel') erros.push(`${onde}: "teste" (reel de teste) só vale para reel.`);
   else if (!Object.hasOwn(MODOS_TESTE, post.teste)) {

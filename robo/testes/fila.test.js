@@ -105,3 +105,8 @@ test('reel de teste: aceita manual ou automatico, só em reel', () => {
     /só vale para reel/,
   );
 });
+
+test('"ia" precisa ser true ou false', () => {
+  assert.deepEqual(validarFila(fila(post({ ia: true }))).erros, []);
+  assert.match(validarFila(fila(post({ ia: 'sim' }))).erros.join(), /"ia"/);
+});

@@ -49,6 +49,19 @@ async function procurarJaPublicado(post, { api, agora, log, idsUsados }) {
   return achado ? { idPublicado: achado.id, link: achado.permalink ?? null } : null;
 }
 
+// Rótulo "Informações de IA" (is_ai_generated). Se o Instagram recusar o campo, publica
+// sem o rótulo e avisa no registro, em vez de perder o post.
+async function criarComRotuloIa(api, params, post, log) {
+  if (!post.ia) return api.criarContainer(params);
+  try {
+    return await api.criarContainer({ ...params, is_ai_generated: 'true' });
+  } catch (erro) {
+    if (erro.tokenInvalido || !/is_ai_generated/i.test(erro.message)) throw erro;
+    log(`Aviso: o Instagram recusou o rótulo de IA em "${post.id}" (${erro.message}). Publicando sem o rótulo.`);
+    return api.criarContainer(params);
+  }
+}
+
 export async function publicarPost(post, { api, urlSite, verificarUrl, agora, log = () => {}, idsUsados = new Set() }) {
   const existente = await procurarJaPublicado(post, { api, agora, log, idsUsados });
   if (existente) return { ...existente, recuperado: true };
@@ -71,7 +84,7 @@ export async function publicarPost(post, { api, urlSite, verificarUrl, agora, lo
       params.share_to_feed = 'true';
     }
     if (post.capa) params.cover_url = urlDaMidia(urlSite, post, post.capa);
-    container = await api.criarContainer(params);
+    container = await criarComRotuloIa(api, params, post, log);
     await api.aguardarContainer(container, { video: true });
   } else if (post.tipo === 'carrossel') {
     const filhos = [];
@@ -83,11 +96,11 @@ export async function publicarPost(post, { api, urlSite, verificarUrl, agora, lo
       filhos.push({ id: await api.criarContainer(params), video });
     }
     for (const filho of filhos) await api.aguardarContainer(filho.id, { video: filho.video });
-    container = await api.criarContainer({
+    container = await criarComRotuloIa(api, {
       media_type: 'CAROUSEL',
       children: filhos.map((filho) => filho.id).join(','),
       caption: post.legenda,
-    });
+    }, post, log);
     await api.aguardarContainer(container, { video: false });
   } else {
     throw new ErroInstagram(`Tipo de post desconhecido: ${post.tipo}`);
