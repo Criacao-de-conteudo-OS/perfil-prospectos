@@ -68,6 +68,22 @@
       "ia": true,
       "teste": "manual",
       "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-04-reel-seu-cliente-nao-sumiu",
+      "tipo": "reel",
+      "agendado_para": "2026-11-04T12:30:00-03:00",
+      "legenda": "Seu cliente não sumiu. Ele ficou ocupado, e você parou de chamar.\n\nMuita venda não morre no “não”. Morre no silêncio depois da proposta.\n\n3 coisas mudam isso: decidir antes quantos contatos fazer e em quais dias, levar algo novo em cada mensagem e registrar tudo num lugar só.\n\nSalva esse vídeo pra próxima proposta.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#followup #vendasb2b #prospeccao #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "instagram": {
         "status": "pendente",
         "tentativas": 0
       }
@@ -117,6 +133,22 @@
       "capa": "capa.jpg",
       "ia": true,
       "teste": "manual",
+      "instagram": {
+        "status": "pausado",
+        "tentativas": 0,
+        "motivo": "substituído pelo plano 2026-11-02"
+      }
+    },
+    {
+      "id": "2026-11-07-reel-cadencia-automatica",
+      "tipo": "reel",
+      "agendado_para": "2026-11-07T19:30:00-03:00",
+      "legenda": "Você esqueceu o 2º follow-up?\n\nA cadência manda cada contato no dia certo e mostra em qual follow-up seus clientes respondem, qual mensagem funciona melhor e qual canal dá mais resposta.\n\nQuer testar? Link na bio.\n\nNarração com voz de IA. Telas com dados de demonstração.\n\n#followup #prospeccao #vendasb2b #gestaocomercial",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
       "instagram": {
         "status": "pendente",
         "tentativas": 0
