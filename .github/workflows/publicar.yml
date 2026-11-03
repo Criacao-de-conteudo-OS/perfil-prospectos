@@ -12,9 +12,14 @@ on:
   push:
     branches: [main]
     paths: [fila.json]
-  # Botão "Run workflow" na aba Actions.
+  # Botão "Run workflow" na aba Actions. Também é por aqui que o despertador
+  # reserva (cron-job.org) acorda o robô quando o GitHub pula a agenda.
   workflow_dispatch:
     inputs:
+      despertador:
+        description: "Despertador reserva: age como a rodada da agenda (sai na hora se outra rodada já está esperando)"
+        type: boolean
+        default: false
       so_id:
         description: "Publicar agora só este post (id). Deixe vazio para seguir a agenda."
         required: false
@@ -29,9 +34,9 @@ permissions:
   actions: read
 
 jobs:
-  # Se outra rodada já está esperando o próximo post, a rodada da agenda não
-  # precisa fazer nada. Assim ela termina na hora, em vez de ficar na fila
-  # e ser cancelada.
+  # Se outra rodada já está esperando o próximo post, a rodada da agenda (ou do
+  # despertador reserva) não precisa fazer nada. Assim ela termina na hora, em
+  # vez de ficar na fila e ser cancelada.
   porteiro:
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -43,7 +48,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           seguir=sim
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.despertador }}" = "true" ]; then
             # Se a consulta falhar, segue: melhor uma rodada a mais que um post perdido.
             antes=$(gh api "repos/${{ github.repository }}/actions/workflows/publicar.yml/runs?status=in_progress&per_page=30" \
               --jq '[.workflow_runs[] | select(.id < ${{ github.run_id }})] | length' 2>/dev/null) || antes=0
