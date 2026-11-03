@@ -52,8 +52,12 @@
         "07.jpg"
       ],
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "publicado",
+        "tentativas": 1,
+        "id_publicado": "18132763822686443",
+        "link": "https://www.instagram.com/p/DfR751dj3XY/",
+        "publicado_em": "2026-11-03T12:58:36.387Z",
+        "ultimo_erro": null
       }
     },
     {
