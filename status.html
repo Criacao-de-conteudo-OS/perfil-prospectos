@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<!-- Troque estes dois valores para usar o painel com outro perfil. -->
+<meta name="repo" content="Criacao-de-conteudo-OS/perfil-prospectos">
+<meta name="perfil" content="_prospectos">
+<title>Programação do Instagram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+  /* Painel do robô: o próximo post em destaque, a semana em grade (12h e 19h) e o detalhe de cada post num diálogo. */
+  :root {
+    --fundo: #0B0D14;
+    --cartao: #141826;
+    --cartao-2: #1A1F31;
+    --borda: #272E45;
+    --texto: #E8EAF3;
+    --suave: #9BA2BA;
+    --destaque: #8F92F7;
+    --ok: #34D399;
+    --proximo: #8F92F7;
+    --alerta: #F2B65A;
+    --erro: #F87171;
+    --titulo: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+    --corpo: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    --dado: "JetBrains Mono", ui-monospace, Consolas, monospace;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --fundo: #F3F4FA; --cartao: #FFFFFF; --cartao-2: #EEF0F8; --borda: #DCE0EE;
+      --texto: #141827; --suave: #5A6279; --destaque: #4F52D9; --proximo: #4F52D9;
+      --ok: #0E9F6E; --alerta: #B7791F; --erro: #DC2626; color-scheme: light;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 400 15px/1.5 var(--corpo); }
+  main { max-width: 1180px; margin: 0 auto; padding-block: max(24px, env(safe-area-inset-top, 0px)) 56px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  a { color: var(--destaque); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible, a:focus-visible, .post:focus-visible { outline: 2px solid var(--destaque); outline-offset: 3px; }
+
+  header.topo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+  .olho { font: 600 12px/1 var(--dado); letter-spacing: .12em; text-transform: uppercase; color: var(--destaque); }
+  h1 { font: 800 clamp(28px, 5vw, 44px)/1.05 var(--titulo); margin: 10px 0 0; letter-spacing: -.02em; }
+  .atualizado { color: var(--suave); font-size: 13px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .botao { background: var(--cartao); border: 1px solid var(--borda); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .botao:hover { border-color: var(--destaque); }
+
+  .numeros { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .numero { display: flex; align-items: baseline; gap: 8px; background: var(--cartao); border: 1px solid var(--borda); border-radius: 999px; padding: 8px 16px; }
+  .numero b { font: 700 18px/1 var(--dado); font-variant-numeric: tabular-nums; }
+  .numero small { color: var(--suave); font-size: 13px; }
+  .numero.erro b { color: var(--erro); }
+
+  /* Próximo post */
+  .proximo { margin-top: 28px; display: grid; grid-template-columns: minmax(0, 230px) minmax(0, 1fr); gap: 28px; align-items: center;
+    background: var(--cartao); border: 1px solid var(--borda); border-radius: 22px; padding: 22px; }
+  .proximo .midia { border-radius: 16px; overflow: hidden; background: #000; aspect-ratio: 9 / 16; max-width: 100%; }
+  .proximo .midia.carrossel { aspect-ratio: 4 / 5; }
+  .proximo .midia video, .proximo .midia img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .proximo .rotulo { font: 600 12px/1 var(--dado); letter-spacing: .1em; text-transform: uppercase; color: var(--proximo); }
+  .proximo h2 { font: 800 clamp(24px, 3.6vw, 36px)/1.1 var(--titulo); margin: 10px 0; text-wrap: balance; }
+  .contagem { font: 700 clamp(22px, 3vw, 30px)/1.1 var(--dado); color: var(--texto); font-variant-numeric: tabular-nums; }
+  .proximo .meta { color: var(--suave); margin-top: 6px; }
+  .proximo .acoes { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .sem-proximo { margin-top: 28px; background: var(--cartao); border: 1px dashed var(--borda); border-radius: 22px; padding: 22px; color: var(--suave); }
+
+  /* Semana */
+  .cabeca-semana { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  .cabeca-semana h2 { font: 700 22px/1.2 var(--titulo); margin: 0; }
+  .navegar { display: flex; gap: 8px; align-items: center; }
+  .navegar span { color: var(--suave); font-size: 13px; min-width: 150px; text-align: center; font-variant-numeric: tabular-nums; }
+  .semana { margin-top: 14px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 10px; }
+  .dia { background: var(--cartao); border: 1px solid var(--borda); border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .dia.hoje { border-color: var(--destaque); }
+  .dia-titulo { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; color: var(--suave); }
+  .dia-titulo b { font: 700 15px/1 var(--titulo); color: var(--texto); }
+  .dia.hoje .dia-titulo span { color: var(--destaque); font-weight: 600; }
+  .vazio-dia { color: var(--suave); font-size: 12px; padding: 6px 2px; }
+  .post { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 8px; align-items: start; text-align: left; width: 100%;
+    background: var(--cartao-2); border: 1px solid var(--borda); border-radius: 12px; padding: 7px; }
+  .post:hover { border-color: var(--destaque); }
+  .post .mini { width: 46px; aspect-ratio: 9 / 16; border-radius: 8px; background: var(--borda) center / cover no-repeat; }
+  .post .mini.carrossel { aspect-ratio: 4 / 5; }
+  .post .hora { font: 600 12px/1.2 var(--dado); color: var(--suave); }
+  .post .titulo-post { display: block; font-size: 13px; line-height: 1.3; margin-top: 3px; overflow-wrap: anywhere;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .selo { display: inline-block; margin-top: 5px; font: 600 10px/1 var(--dado); letter-spacing: .05em; text-transform: uppercase; padding: 4px 6px; border-radius: 6px; }
+  .selo.publicado { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+  .selo.proximo { color: var(--proximo); background: color-mix(in srgb, var(--proximo) 16%, transparent); }
+  .selo.agendado { color: var(--suave); background: var(--cartao); border: 1px solid var(--borda); }
+  .selo.falhou { color: var(--erro); background: color-mix(in srgb, var(--erro) 14%, transparent); }
+  .selo.tentando { color: var(--alerta); background: color-mix(in srgb, var(--alerta) 14%, transparent); }
+  .selo.pausado { color: var(--alerta); background: color-mix(in srgb, var(--alerta) 10%, transparent); }
+
+  .problemas { margin-top: 28px; }
+  .problemas h2 { font: 700 18px/1.2 var(--titulo); margin: 0 0 10px; color: var(--erro); }
+  .problemas ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .problemas li { background: var(--cartao); border: 1px solid var(--borda); border-radius: 12px; padding: 12px 14px; }
+  .problemas .erro-texto { color: var(--erro); font-size: 13px; overflow-wrap: anywhere; margin: 4px 0 0; }
+
+  footer { margin-top: 36px; color: var(--suave); font-size: 13px; }
+
+  /* Detalhe do post */
+  dialog { width: min(920px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); border: 1px solid var(--borda); border-radius: 22px;
+    background: var(--cartao); color: var(--texto); padding: 0; }
+  dialog::backdrop { background: rgba(5, 7, 12, .72); }
+  .detalhe { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; padding: 22px; }
+  .detalhe .midia { border-radius: 16px; overflow: hidden; background: #000; }
+  .detalhe video { display: block; width: 100%; aspect-ratio: 9 / 16; }
+  .slides { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 8px; }
+  .slides img { flex: 0 0 100%; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; scroll-snap-align: start; border-radius: 12px; }
+  .detalhe .info { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+  .detalhe .legenda { align-self: stretch; }
+  .detalhe h3 { font: 800 26px/1.12 var(--titulo); margin: 0; text-wrap: balance; }
+  .detalhe .meta { color: var(--suave); font-size: 14px; }
+  .legenda { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; background: var(--cartao-2); border: 1px solid var(--borda);
+    border-radius: 12px; padding: 14px; font: 400 14px/1.55 var(--corpo); max-height: 320px; overflow: auto; }
+  .sem-midia { color: var(--suave); font-size: 14px; padding: 18px; text-align: center; }
+  .fechar { position: absolute; top: 10px; right: 10px; background: var(--cartao-2); border: 1px solid var(--borda); border-radius: 999px; width: 36px; height: 36px; }
+
+  @media (max-width: 900px) {
+    .semana { grid-template-columns: minmax(0, 1fr); }
+    .dia { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+    .dia-titulo { width: 100%; }
+    .dia .post { flex: 1 1 260px; }
+  }
+  @media (max-width: 640px) {
+    .proximo, .detalhe { grid-template-columns: minmax(0, 1fr); }
+    .proximo .midia { max-width: 240px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<main>
+  <header class="topo">
+    <div>
+      <div class="olho">Robô do Instagram</div>
+      <h1>Programação do <span id="perfil"></span></h1>
+    </div>
+    <div class="atualizado"><span id="atualizado">Carregando…</span><button class="botao" id="recarregar" type="button">Atualizar agora</button></div>
+  </header>
+
+  <section class="numeros" aria-label="Resumo">
+    <div class="numero"><b id="n-fila">–</b><small>na fila</small></div>
+    <div class="numero"><b id="n-publicados">–</b><small>publicados</small></div>
+    <div class="numero erro"><b id="n-problemas">–</b><small>com problema</small></div>
+    <div class="numero"><b id="n-pausados">–</b><small>pausados</small></div>
+  </section>
+
+  <section id="proximo" aria-label="Próximo post"></section>
+
+  <section aria-label="Semana">
+    <div class="cabeca-semana">
+      <h2>Semana</h2>
+      <div class="navegar">
+        <button class="botao" id="anterior" type="button" aria-label="Semana anterior">‹</button>
+        <span id="intervalo"></span>
+        <button class="botao" id="seguinte" type="button" aria-label="Próxima semana">›</button>
+        <button class="botao" id="hoje" type="button">Hoje</button>
+      </div>
+    </div>
+    <div class="semana" id="semana"></div>
+  </section>
+
+  <section class="problemas" id="problemas" hidden>
+    <h2>Com problema</h2>
+    <ul id="lista-problemas"></ul>
+  </section>
+
+  <footer>
+    Horários de Brasília. A página se atualiza sozinha a cada minuto.
+    · <a id="link-robo" href="#">Ver o robô trabalhando no GitHub</a>
+  </footer>
+</main>
+
+<dialog id="dialogo" aria-label="Detalhe do post">
+  <button class="fechar" id="fechar" type="button" aria-label="Fechar">✕</button>
+  <div id="detalhe"></div>
+</dialog>
+
+<script>
+  const repo = document.querySelector('meta[name="repo"]').content;
+  const perfil = document.querySelector('meta[name="perfil"]').content;
+  document.getElementById('perfil').textContent = '@' + perfil;
+  document.getElementById('link-robo').href = `https://github.com/${repo}/actions`;
+
+  const FUSO = 'America/Sao_Paulo';
+  const TIPOS = { reel: 'Reel', carrossel: 'Carrossel', imagem: 'Imagem' };
+  const DIAS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  const fmtDia = new Intl.DateTimeFormat('en-CA', { timeZone: FUSO, year: 'numeric', month: '2-digit', day: '2-digit' });
+  const fmtHora = new Intl.DateTimeFormat('pt-BR', { timeZone: FUSO, hour: '2-digit', minute: '2-digit' });
+  const fmtData = new Intl.DateTimeFormat('pt-BR', { timeZone: FUSO, weekday: 'short', day: '2-digit', month: '2-digit' });
+  const fmtCurto = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC', day: '2-digit', month: '2-digit' });
+
+  let posts = [];
+  let deslocamentoSemana = 0;
+
+  const statusDe = (p) => (p.instagram && p.instagram.status) || 'pendente';
+  const tentativas = (p) => (p.instagram && p.instagram.tentativas) || 0;
+  // Reel de teste que o Instagram recusou sai como reel normal.
+  const emTeste = (p) => Boolean(p.teste) && !(p.instagram && p.instagram.teste_recusado);
+  const quando = (p) => Date.parse(p.agendado_para);
+  const midia = (p, arquivo) => `midia/${encodeURIComponent(p.id)}/${encodeURIComponent(arquivo)}`;
+  const capaDe = (p) => (p.capa ? midia(p, p.capa) : p.tipo !== 'reel' && p.midias && p.midias[0] ? midia(p, p.midias[0]) : null);
+  const ganchoDe = (p) => String(p.legenda || '').split('\n').find((l) => l.trim()) || p.id;
+  const diaDe = (ms) => fmtDia.format(new Date(ms)); // AAAA-MM-DD no horário de Brasília
+  const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+  function seloDe(p, proximoId) {
+    const s = statusDe(p);
+    if (s === 'publicado') return ['publicado', 'Publicado'];
+    if (s === 'falhou') return ['falhou', 'Com problema'];
+    if (s === 'pausado') return ['pausado', 'Pausado'];
+    if (tentativas(p) > 0) return ['tentando', `Tentando de novo (${tentativas(p)}/3)`];
+    if (p.id === proximoId) return ['proximo', 'Próximo'];
+    return ['agendado', 'Agendado'];
+  }
+
+  function falta(ms) {
+    const s = Math.max(0, Math.round((ms - Date.now()) / 1000));
+    const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+    if (s < 60) return 'agora';
+    if (d > 0) return `em ${d} dia${d > 1 ? 's' : ''} e ${h} h`;
+    if (h > 0) return `em ${h} h e ${m} min`;
+    return `em ${m} min`;
+  }
+
+  function midiaHtml(p, grande) {
+    if (p.tipo === 'reel') {
+      const video = p.midias && p.midias[0];
+      if (!video) return '<div class="sem-midia">Sem vídeo.</div>';
+      const capa = p.capa ? ` poster="${esc(midia(p, p.capa))}"` : '';
+      return `<video controls playsinline preload="metadata"${capa} src="${esc(midia(p, video))}"></video>`;
+    }
+    const imagens = (p.midias || []).filter((m) => /\.(jpe?g|png)$/i.test(m));
+    if (!imagens.length) return '<div class="sem-midia">Sem imagens.</div>';
+    if (!grande) return `<img src="${esc(midia(p, imagens[0]))}" alt="">`;
+    return `<div class="slides">${imagens.map((m, i) => `<img src="${esc(midia(p, m))}" alt="Slide ${i + 1}" loading="lazy">`).join('')}</div>`;
+  }
+
+  function desenharProximo(proximo) {
+    const alvo = document.getElementById('proximo');
+    if (!proximo) {
+      alvo.innerHTML = '<div class="sem-proximo">Nenhum post na fila. Quando a fábrica enviar a semana, o próximo aparece aqui.</div>';
+      return;
+    }
+    const tipo = TIPOS[proximo.tipo] || proximo.tipo;
+    alvo.innerHTML = `
+      <div class="proximo">
+        <div class="midia ${proximo.tipo === 'reel' ? '' : 'carrossel'}">${midiaHtml(proximo, false)}</div>
+        <div>
+          <div class="rotulo">Próximo post</div>
+          <h2>${esc(ganchoDe(proximo))}</h2>
+          <div class="contagem" id="contagem">${falta(quando(proximo))}</div>
+          <div class="meta">${esc(tipo)} · ${esc(fmtData.format(new Date(quando(proximo))))} às ${esc(fmtHora.format(new Date(quando(proximo))))}</div>
+          <div class="acoes"><button class="botao" type="button" data-abrir="${esc(proximo.id)}">Ver post completo</button></div>
+        </div>
+      </div>`;
+  }
+
+  function inicioDaSemana() {
+    const [a, m, d] = diaDe(Date.now()).split('-').map(Number);
+    const hoje = Date.UTC(a, m - 1, d);
+    const diaSemana = new Date(hoje).getUTCDay(); // 0 = domingo
+    const segunda = hoje - ((diaSemana + 6) % 7) * 86400000;
+    return segunda + deslocamentoSemana * 7 * 86400000;
+  }
+
+  function desenharSemana(proximoId) {
+    const inicio = inicioDaSemana();
+    const dias = Array.from({ length: 7 }, (_, i) => inicio + i * 86400000);
+    const chaves = dias.map((ms) => new Date(ms).toISOString().slice(0, 10));
+    const hoje = diaDe(Date.now());
+    document.getElementById('intervalo').textContent = `${fmtCurto.format(new Date(dias[0]))} a ${fmtCurto.format(new Date(dias[6]))}`;
+    const porDia = new Map(chaves.map((c) => [c, []]));
+    for (const p of posts) {
+      const chave = diaDe(quando(p));
+      if (porDia.has(chave)) porDia.get(chave).push(p);
+    }
+    document.getElementById('semana').innerHTML = chaves.map((chave, i) => {
+      const lista = porDia.get(chave).sort((a, b) => quando(a) - quando(b));
+      const data = new Date(dias[i]);
+      return `
+        <div class="dia ${chave === hoje ? 'hoje' : ''}">
+          <div class="dia-titulo"><b>${DIAS[data.getUTCDay()]}</b><span>${chave === hoje ? 'hoje' : fmtCurto.format(data)}</span></div>
+          ${lista.length ? lista.map((p) => {
+            const [classe, texto] = seloDe(p, proximoId);
+            const capa = capaDe(p);
+            return `
+              <button class="post" type="button" data-abrir="${esc(p.id)}">
+                <span class="mini ${p.tipo === 'reel' ? '' : 'carrossel'}" ${capa ? `style="background-image:url('${esc(capa)}')"` : ''}></span>
+                <span>
+                  <span class="hora">${esc(fmtHora.format(new Date(quando(p))))} · ${esc(TIPOS[p.tipo] || p.tipo)}${emTeste(p) ? ' de teste' : ''}</span>
+                  <span class="titulo-post">${esc(ganchoDe(p))}</span>
+                  <span class="selo ${classe}">${esc(texto)}</span>
+                </span>
+              </button>`;
+          }).join('') : '<div class="vazio-dia">Sem post</div>'}
+        </div>`;
+    }).join('');
+  }
+
+  function desenharProblemas() {
+    const problemas = posts.filter((p) => statusDe(p) === 'falhou' || (statusDe(p) === 'pendente' && tentativas(p) > 0));
+    document.getElementById('problemas').hidden = !problemas.length;
+    document.getElementById('lista-problemas').innerHTML = problemas.map((p) => `
+      <li><b>${esc(ganchoDe(p))}</b> <span style="color:var(--suave)">· ${esc(fmtData.format(new Date(quando(p))))}</span>
+      <p class="erro-texto">${esc((p.instagram && p.instagram.ultimo_erro) || 'Sem detalhe do erro.')}</p></li>`).join('');
+  }
+
+  function abrir(id) {
+    const p = posts.find((x) => x.id === id);
+    if (!p) return;
+    const [classe, texto] = seloDe(p, null);
+    const link = p.instagram && p.instagram.link;
+    const publicadoEm = p.instagram && p.instagram.publicado_em;
+    const publicado = statusDe(p) === 'publicado';
+    document.getElementById('detalhe').innerHTML = `
+      <div class="detalhe">
+        <div class="midia">${midiaHtml(p, true)}</div>
+        <div class="info">
+          <span class="selo ${classe}">${esc(texto)}</span>
+          <h3>${esc(ganchoDe(p))}</h3>
+          <div class="meta">${esc(TIPOS[p.tipo] || p.tipo)}${emTeste(p) ? ' de teste (só para quem não segue)' : ''}${p.instagram && p.instagram.teste_recusado ? ' (era de teste, mas o Instagram recusou o modo teste e saiu normal)' : ''} ·${publicado && publicadoEm ? 'publicado em ' + esc(fmtData.format(new Date(publicadoEm))) + ' às ' + esc(fmtHora.format(new Date(publicadoEm))) : 'agendado para ' + esc(fmtData.format(new Date(quando(p)))) + ' às ' + esc(fmtHora.format(new Date(quando(p))))}</div>
+          ${link ? `<a href="${esc(link)}" target="_blank" rel="noopener">Ver no Instagram</a>` : ''}
+          <pre class="legenda">${esc(p.legenda)}</pre>
+        </div>
+      </div>`;
+    const dialogo = document.getElementById('dialogo');
+    if (!dialogo.open) dialogo.showModal();
+  }
+
+  function desenhar() {
+    const agora = Date.now();
+    const pendentes = posts.filter((p) => statusDe(p) === 'pendente').sort((a, b) => quando(a) - quando(b));
+    const proximo = pendentes.find((p) => quando(p) >= agora - 2 * 3600000) || null;
+    document.getElementById('n-fila').textContent = pendentes.length;
+    document.getElementById('n-publicados').textContent = posts.filter((p) => statusDe(p) === 'publicado').length;
+    document.getElementById('n-problemas').textContent = posts.filter((p) => statusDe(p) === 'falhou' || (statusDe(p) === 'pendente' && tentativas(p) > 0)).length;
+    document.getElementById('n-pausados').textContent = posts.filter((p) => statusDe(p) === 'pausado').length;
+    desenharProximo(proximo);
+    desenharSemana(proximo && proximo.id);
+    desenharProblemas();
+  }
+
+  async function carregar() {
+    const aviso = document.getElementById('atualizado');
+    // ?fila=arquivo.json (só caminho local) serve para testar o painel com uma fila de exemplo.
+    const local = new URLSearchParams(location.search).get('fila');
+    const url = local && /^[\w.\/-]+\.json$/.test(local) && !local.includes('..')
+      ? local
+      : `https://raw.githubusercontent.com/${repo}/main/fila.json?t=${Date.now()}`;
+    try {
+      const resposta = await fetch(url, { cache: 'no-store' });
+      if (!resposta.ok) throw new Error('HTTP ' + resposta.status);
+      const fila = await resposta.json();
+      posts = Array.isArray(fila.posts) ? fila.posts : [];
+      desenhar();
+      aviso.textContent = 'Atualizado às ' + fmtHora.format(new Date());
+    } catch (erro) {
+      aviso.textContent = 'Não consegui ler a fila agora (' + erro.message + '). Tento de novo em 1 minuto.';
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const alvo = e.target.closest('[data-abrir]');
+    if (alvo) abrir(alvo.dataset.abrir);
+  });
+  const dialogo = document.getElementById('dialogo');
+  document.getElementById('fechar').addEventListener('click', () => dialogo.close());
+  dialogo.addEventListener('click', (e) => { if (e.target === dialogo) dialogo.close(); });
+  dialogo.addEventListener('close', () => dialogo.querySelectorAll('video').forEach((v) => v.pause()));
+  document.getElementById('anterior').addEventListener('click', () => { deslocamentoSemana -= 1; desenhar(); });
+  document.getElementById('seguinte').addEventListener('click', () => { deslocamentoSemana += 1; desenhar(); });
+  document.getElementById('hoje').addEventListener('click', () => { deslocamentoSemana = 0; desenhar(); });
+  document.getElementById('recarregar').addEventListener('click', carregar);
+
+  carregar();
+  setInterval(carregar, 60000);
+  setInterval(() => {
+    const el = document.getElementById('contagem');
+    const pendentes = posts.filter((p) => statusDe(p) === 'pendente').sort((a, b) => quando(a) - quando(b));
+    const proximo = pendentes.find((p) => quando(p) >= Date.now() - 2 * 3600000);
+    if (el && proximo) el.textContent = falta(quando(proximo));
+  }, 30000);
+</script>
+</body>
+</html>
