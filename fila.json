@@ -250,8 +250,12 @@
       "capa": "capa.jpg",
       "ia": true,
       "instagram": {
-        "status": "pendente",
-        "tentativas": 0
+        "status": "publicado",
+        "tentativas": 1,
+        "id_publicado": "18439522243195339",
+        "link": "https://www.instagram.com/reel/Dfjv9pYFClO/",
+        "publicado_em": "2026-11-10T11:01:06.019Z",
+        "ultimo_erro": null
       }
     },
     {
