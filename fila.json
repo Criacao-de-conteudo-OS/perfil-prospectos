@@ -817,6 +817,21 @@
       }
     },
     {
+      "id": "2026-11-29-reel-me-manda-por-e-mail",
+      "tipo": "reel",
+      "agendado_para": "2026-11-29T13:00:00-03:00",
+      "legenda": "Você caiu no \"me manda por e-mail\"? ↓\n\nMuitas vezes, \"me manda por e-mail\" é o jeito educado de encerrar a conversa. Você manda, ele não abre, e a venda esfria sem ninguém dizer não.\n\nAntes de desligar, faça 2 perguntas:\n1. \"O que você precisa ver nesse e-mail pra decidir?\" Assim o e-mail responde o que ele quer saber, não o que você quer mostrar.\n2. \"Posso te ligar quinta pra gente ver juntos?\" Essa é a que mais muda: a próxima conversa já sai marcada.\n\nAí o e-mail tem motivo pra ser lido.\n\nNo ProspectOS, os próximos contatos da cadência saem sozinhos, no dia certo.\n\nSalva pra próxima ligação.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#vendas #vendasb2b #prospeccao #negociacao",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
       "id": "2026-11-29-reel-cada-vendedor-faz-de-um-jeito",
       "tipo": "reel",
       "agendado_para": "2026-11-29T19:30:00-03:00",
