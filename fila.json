@@ -666,6 +666,21 @@
       }
     },
     {
+      "id": "2026-11-26-reel-a-venda-mais-facil-do-mes",
+      "tipo": "reel",
+      "agendado_para": "2026-11-26T12:30:00-03:00",
+      "legenda": "Você esqueceu a venda mais fácil. ↓\n\nQuem já comprou de você já confia em você. E mesmo assim a última mensagem costuma ser \"obrigado pela compra\", meses atrás.\n\nFaz hoje:\n1. Separe 3 clientes que compraram e sumiram.\n2. Pra cada um, leve uma novidade: um produto, uma condição, uma ideia pro negócio dele.\n3. Nada de cobrança nem de \"e aí, vamos comprar de novo?\". É conversa.\n\nExemplo pra adaptar: \"[Nome], chegou [uma novidade] que combina com [a empresa dele]. Quer ver?\"\n\nNo ProspectOS, a carteira mostra quem está sem nenhum próximo passo.\n\nSalva e separa os seus 3 hoje.\n\nNarração com voz de IA. Tela com dados de demonstração.\n\n#vendas #vendasb2b #clientes #prospeccao",
+      "midias": [
+        "video.mp4"
+      ],
+      "capa": "capa.jpg",
+      "ia": true,
+      "instagram": {
+        "status": "pendente",
+        "tentativas": 0
+      }
+    },
+    {
       "id": "2026-11-26-reel-reuniao-boa-e-a-cliente-sumiu",
       "tipo": "reel",
       "agendado_para": "2026-11-26T18:30:00-03:00",
